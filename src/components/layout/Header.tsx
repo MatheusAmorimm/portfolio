@@ -21,7 +21,7 @@ export function Header() {
         >
           {DISPLAY_NAME}
         </Link>
-        <nav aria-label={t("projects")}>
+        <nav aria-label={t("mainNavigation")}>
           <ul className="flex items-center gap-5">
             <li>
               <Link
