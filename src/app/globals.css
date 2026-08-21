@@ -1,26 +1,77 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /*
+   * Cor — ver spec § 4.1.
+   * O Tailwind v4 gera uma utility por token: --color-muted vira
+   * `text-muted`, --color-surface vira `bg-surface`, e assim por diante.
+   * Use sempre a utility gerada; nunca escreva o hex em componente.
+   */
+  --color-background: #0b0e14;
+  --color-surface: #12161f;
+  --color-surface-hover: #171c27;
+  --color-border: #1e2430;
+  --color-border-strong: #2a3241;
+  --color-foreground: #e6e8ec;
+  --color-muted: #9aa3b2;
+  --color-accent: #fbbf24;
+  --color-accent-strong: #f59e0b;
+  --color-on-accent: #0b0e14;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Tipografia — ver spec § 4.2 */
+  --font-display: var(--font-display-face);
+  --font-mono: var(--font-mono-face);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --text-display: clamp(2.5rem, 6vw, 4rem);
+  --text-h1: clamp(2rem, 4vw, 2.75rem);
+  --text-h2: 1.75rem;
+  --text-h3: 1.25rem;
+  --text-label: 0.75rem;
+
+  /* Espaçamento e layout — ver spec § 4.3 */
+  --space-section: clamp(6rem, 12vw, 10rem);
+  --space-block: clamp(3rem, 6vw, 5rem);
+  --space-gutter: clamp(1.25rem, 4vw, 2rem);
+
+  --width-container: 1120px;
+  --width-prose: 68ch;
+
+  --radius-badge: 4px;
+  --radius-card: 8px;
+
+  /* Movimento — ver spec § 4.4 */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-hover: 200ms;
+  --duration-page: 250ms;
+  --duration-card: 400ms;
+  --duration-tab: 450ms;
+  --duration-hero: 600ms;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-display);
+  line-height: 1.7;
+}
+
+/* Foco visível em todo elemento interativo — requisito de acessibilidade. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/*
+ * prefers-reduced-motion DESATIVA a animação, não a reduz.
+ * As variantes de JS são tratadas separadamente com useReducedMotion().
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
