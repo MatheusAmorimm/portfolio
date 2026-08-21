@@ -1,6 +1,14 @@
 import { useTranslations } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 
-export default function HomePage() {
+export default async function HomePage({ params }: PageProps<"/[locale]">) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  return <HomeContent />;
+}
+
+function HomeContent() {
   const t = useTranslations("nav");
 
   return (

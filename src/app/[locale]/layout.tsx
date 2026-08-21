@@ -2,6 +2,8 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -39,7 +41,13 @@ export default async function LocaleLayout({
       className={`${displayFace.variable} ${monoFace.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <Header />
+          <div id="conteudo" className="flex-1">
+            {children}
+          </div>
+          <Footer />
+        </NextIntlClientProvider>
       </body>
     </html>
   );
