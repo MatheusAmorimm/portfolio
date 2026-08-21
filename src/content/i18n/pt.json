@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Início",
+    "projects": "Projetos",
+    "about": "Sobre",
+    "contact": "Contato",
+    "skipToContent": "Pular para o conteúdo"
+  },
+  "locale": {
+    "label": "Idioma",
+    "pt": "Português",
+    "en": "English"
+  },
+  "social": {
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "email": "E-mail"
+  }
+}
