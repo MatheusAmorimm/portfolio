@@ -1,5 +1,4 @@
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
@@ -33,7 +32,6 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  setRequestLocale(locale);
 
   return (
     <html
