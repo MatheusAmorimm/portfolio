@@ -1,4 +1,11 @@
 {
+  "hero": {
+    "name": "Matheus Amorim",
+    "headline": "Ciência de dados com pé na engenharia.",
+    "paragraph": "Analiso dados e construo o sistema que os coloca em uso. Curso Ciência de Dados e Inteligência Artificial na PUC-SP e trabalho com infraestrutura, automação e dados numa corretora de planos de saúde — onde o modelo não termina no notebook, termina no servidor.",
+    "ctaProjects": "Ver projetos",
+    "ctaCv": "Baixar currículo"
+  },
   "nav": {
     "home": "Início",
     "mainNavigation": "Navegação principal",

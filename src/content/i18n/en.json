@@ -1,4 +1,11 @@
 {
+  "hero": {
+    "name": "Matheus Amorim",
+    "headline": "Data science, with engineering underneath.",
+    "paragraph": "I analyse data and build the systems that put it to work. I study Data Science and Artificial Intelligence at PUC-SP and work with infrastructure, automation and data at a health insurance brokerage — where a model doesn't end in a notebook, it ends on a server.",
+    "ctaProjects": "View projects",
+    "ctaCv": "Download CV"
+  },
   "nav": {
     "home": "Home",
     "mainNavigation": "Main navigation",

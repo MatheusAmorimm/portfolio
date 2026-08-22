@@ -62,6 +62,26 @@ body {
 }
 
 /*
+ * Cascata de entrada do hero: headline → parágrafo → CTAs.
+ * CSS puro por decisão técnica, não por economia: o hero contém o LCP,
+ * e animá-lo por JavaScript faria o LCP esperar a hidratação.
+ */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-rise {
+  animation: hero-rise var(--duration-hero) var(--ease) backwards;
+}
+
+/*
  * prefers-reduced-motion DESATIVA a animação, não a reduz.
  * As variantes de JS são tratadas separadamente com useReducedMotion().
  */
