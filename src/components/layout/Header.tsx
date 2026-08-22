@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { Container } from "@/components/ui/Container";
 import { DISPLAY_NAME } from "@/lib/social";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 
@@ -14,7 +15,7 @@ export function Header() {
       >
         {t("skipToContent")}
       </a>
-      <div className="mx-auto flex w-full max-w-(--width-container) items-center justify-between gap-6 px-(--space-gutter) py-4">
+      <Container className="flex items-center justify-between gap-6 py-4">
         <Link
           href="/"
           className="font-mono text-label uppercase tracking-[0.06em]"
@@ -50,7 +51,7 @@ export function Header() {
           </ul>
         </nav>
         <LocaleSwitcher />
-      </div>
+      </Container>
     </header>
   );
 }

@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { Container } from "@/components/ui/Container";
 import { DISPLAY_NAME, SOCIAL } from "@/lib/social";
 
 const LINKS = [
@@ -12,7 +13,7 @@ export function Footer() {
 
   return (
     <footer className="mt-auto border-t border-border">
-      <div className="mx-auto flex w-full max-w-(--width-container) flex-wrap items-center justify-between gap-4 px-(--space-gutter) py-8">
+      <Container className="flex flex-wrap items-center justify-between gap-4 py-8">
         <p className="font-mono text-label uppercase tracking-[0.06em] text-muted">
           {DISPLAY_NAME}
         </p>
@@ -31,7 +32,7 @@ export function Footer() {
             </li>
           ))}
         </ul>
-      </div>
+      </Container>
     </footer>
   );
 }
