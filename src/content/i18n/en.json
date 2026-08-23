@@ -13,6 +13,28 @@
     "infra": "Infrastructure",
     "learning": "Learning"
   },
+  "about": {
+    "title": "About",
+    "p1": "I started in fraud prevention. At HS Prevent I analysed documents using forensic document examination, looking for the inconsistency that gives a forgery away — and organised that volume into spreadsheets so the operation could see patterns where there had only been stacks of paper. That's where \"what is this data telling us?\" stopped being an abstract question.",
+    "p2": "That led me into technology. I completed a degree in Systems Analysis and Development at UNINOVE in 2025, and in February of that year started a bachelor's in Data Science and Artificial Intelligence at PUC-SP — the only programme in Brazil built around Humanistic AI, an approach that treats AI systems as part of a human context rather than an isolated box.",
+    "p3": "Today I work as an infrastructure and IT projects analyst at a health insurance brokerage. I build the dashboards and automations behind decisions in management and sales, administer databases and web servers, and plan the operation's technical projects. The job forces me to close the whole loop: collect, clean, model, ship, and keep it running.",
+    "p4": "That combination is what I'm after. Plenty of people can run a model. Fewer can provision the server it lives on, put a reverse proxy in front of it, and design an architecture where swapping the database doesn't mean rewriting the business rules. My projects are an attempt to keep both ends sharp at once.",
+    "outsideLabel": "Outside the code",
+    "outside": "basketball, video games, and reading about technology — plus a month in Montevideo on an intensive Spanish course at Universidad Católica del Uruguay.",
+    "readMore": "Read the full background",
+    "cvTitle": "CV",
+    "cvPending": "[→ preencher] CV PDF in PT and EN not yet provided by the author."
+  },
+  "timeline": {
+    "title": "Background",
+    "ongoing": "present",
+    "compare": "Infrastructure and IT Projects Analyst — Compare Plano de Saúde",
+    "puc": "Data Science and AI — PUC-SP",
+    "marche": "E-Commerce Shopper — St Marche",
+    "uninove": "Systems Analysis and Development — UNINOVE",
+    "hsprevent": "Fraud Prevention Assistant — HS Prevent",
+    "ibrasa": "Apprentice — IBRASA"
+  },
   "nav": {
     "home": "Home",
     "mainNavigation": "Main navigation",
