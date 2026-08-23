@@ -5,7 +5,7 @@
  * Título e instituição vivem em content/i18n sob `timeline.<id>`.
  */
 export type TimelineEntry = {
-  id: string;
+  id: "compare" | "puc" | "marche" | "uninove" | "hsprevent" | "ibrasa";
   kind: "education" | "work";
   start: string;
   end: string | null;
