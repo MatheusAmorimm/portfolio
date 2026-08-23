@@ -6,6 +6,13 @@
     "ctaProjects": "Ver projetos",
     "ctaCv": "Baixar currículo"
   },
+  "stack": {
+    "title": "Stack",
+    "daily": "Uso no dia a dia",
+    "building": "Construo com",
+    "infra": "Infraestrutura",
+    "learning": "Estudando"
+  },
   "nav": {
     "home": "Início",
     "mainNavigation": "Navegação principal",

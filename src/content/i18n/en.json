@@ -6,6 +6,13 @@
     "ctaProjects": "View projects",
     "ctaCv": "Download CV"
   },
+  "stack": {
+    "title": "Stack",
+    "daily": "Day to day",
+    "building": "I build with",
+    "infra": "Infrastructure",
+    "learning": "Learning"
+  },
   "nav": {
     "home": "Home",
     "mainNavigation": "Main navigation",
