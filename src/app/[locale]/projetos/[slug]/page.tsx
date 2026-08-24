@@ -5,6 +5,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
 import { getProject, listProjects } from "@/lib/projects/loader";
+import { stackLabel } from "@/lib/projects/schema";
 import { compileBody } from "@/lib/projects/render";
 
 // Slug fora da lista dá 404 em vez de tentar renderizar sob demanda.
@@ -49,11 +50,14 @@ export default async function CasePage({
           <p className="mt-6 text-foreground">{summary[locale]}</p>
 
           <ul className="mt-8 flex flex-wrap gap-2" aria-label={t("stack")}>
-            {stack.map((item) => (
-              <li key={item}>
-                <Badge>{item}</Badge>
-              </li>
-            ))}
+            {stack.map((item) => {
+              const label = stackLabel(item, locale);
+              return (
+                <li key={label}>
+                  <Badge>{label}</Badge>
+                </li>
+              );
+            })}
           </ul>
 
           {(links.repo ?? links.demo) ? (

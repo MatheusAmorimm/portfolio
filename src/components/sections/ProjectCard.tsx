@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/Badge";
 import { Link } from "@/i18n/navigation";
 import type { Project } from "@/lib/projects/loader";
+import { stackLabel } from "@/lib/projects/schema";
 
 /**
  * Card do grid de projetos. O link cobre o card inteiro por `::after`
@@ -61,11 +62,14 @@ export function ProjectCard({ project, priority = false }: Props) {
         <p className="mt-3 text-muted">{summary[locale]}</p>
 
         <ul className="mt-5 flex flex-wrap gap-2">
-          {stack.slice(0, 4).map((item) => (
-            <li key={item}>
-              <Badge>{item}</Badge>
-            </li>
-          ))}
+          {stack.slice(0, 4).map((item) => {
+            const label = stackLabel(item, locale);
+            return (
+              <li key={label}>
+                <Badge>{label}</Badge>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </article>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { projectSchema } from "./schema";
+import { neutralStack, projectSchema, stackLabel } from "./schema";
 
 // Valores obviamente artificiais — fixture de teste, não conteúdo do site.
 const VALID = {
@@ -37,6 +37,50 @@ describe("projectSchema", () => {
 
   it("rejeita stack vazia", () => {
     expect(() => projectSchema.parse({ ...VALID, stack: [] })).toThrow();
+  });
+
+  it("aceita item de stack bilíngue ao lado de nome de tecnologia", () => {
+    const parsed = projectSchema.parse({
+      ...VALID,
+      stack: ["Python", { pt: "Regressão", en: "Regression" }],
+    });
+    expect(parsed.stack).toEqual([
+      "Python",
+      { pt: "Regressão", en: "Regression" },
+    ]);
+  });
+
+  it("rejeita item de stack bilíngue incompleto ou com campo extra", () => {
+    expect(() =>
+      projectSchema.parse({ ...VALID, stack: [{ pt: "Regressão" }] }),
+    ).toThrow();
+    expect(() =>
+      projectSchema.parse({
+        ...VALID,
+        stack: [{ pt: "Regressão", en: "Regression", es: "Regresión" }],
+      }),
+    ).toThrow();
+  });
+});
+
+describe("stackLabel", () => {
+  it("devolve a string literal como está, nos dois idiomas", () => {
+    expect(stackLabel("Python", "pt")).toBe("Python");
+    expect(stackLabel("Python", "en")).toBe("Python");
+  });
+
+  it("escolhe o idioma do item bilíngue", () => {
+    const item = { pt: "Regressão", en: "Regression" };
+    expect(stackLabel(item, "pt")).toBe("Regressão");
+    expect(stackLabel(item, "en")).toBe("Regression");
+  });
+});
+
+describe("neutralStack", () => {
+  it("mantém só o que não depende de idioma", () => {
+    expect(
+      neutralStack(["Python", { pt: "Regressão", en: "Regression" }, "pandas"]),
+    ).toEqual(["Python", "pandas"]);
   });
 
   it("rejeita cover que não é caminho absoluto", () => {

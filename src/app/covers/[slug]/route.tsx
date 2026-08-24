@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { listProjects } from "@/lib/projects/loader";
+import { neutralStack } from "@/lib/projects/schema";
 import { colorToken } from "@/lib/tokens";
 
 /**
@@ -95,7 +96,7 @@ export async function GET(
         </div>
 
         <div style={{ display: "flex", fontSize: 26, color: colorToken("muted") }}>
-          {stack.join("  ·  ")}
+          {neutralStack(stack).join("  ·  ")}
         </div>
       </div>
     ),
