@@ -20,9 +20,15 @@ type Props = {
    * nenhuma capa disputa banda com o texto do hero.
    */
   aboveFold?: number;
+  /** Repassado ao card — ver ProjectCard. */
+  headingLevel?: 2 | 3;
 };
 
-export function ProjectGrid({ projects, aboveFold = ABOVE_FOLD }: Props) {
+export function ProjectGrid({
+  projects,
+  aboveFold = ABOVE_FOLD,
+  headingLevel = 3,
+}: Props) {
   const t = useTranslations("projects");
 
   if (projects.length === 0) {
@@ -33,7 +39,13 @@ export function ProjectGrid({ projects, aboveFold = ABOVE_FOLD }: Props) {
     <ul className="grid gap-6 sm:grid-cols-2">
       {projects.map((project, index) => {
         const eager = index < aboveFold;
-        const card = <ProjectCard project={project} priority={eager} />;
+        const card = (
+          <ProjectCard
+            project={project}
+            priority={eager}
+            headingLevel={headingLevel}
+          />
+        );
 
         return (
           <li key={project.frontmatter.slug} className="h-full">

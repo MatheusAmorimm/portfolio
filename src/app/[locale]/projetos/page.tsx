@@ -43,7 +43,13 @@ export default async function ProjectsPage({
   const tabs = TABS.map((entry) => ({
     id: entry.id,
     label: t(`tabs.${entry.id}`),
-    panel: <ProjectGrid projects={projectsForTab(projects, entry.id)} />,
+    panel: (
+      <ProjectGrid
+        projects={projectsForTab(projects, entry.id)}
+        // h1 "Projetos" -> h2 nos cards: aqui não há seção intermediária.
+        headingLevel={2}
+      />
+    ),
   }));
 
   return (

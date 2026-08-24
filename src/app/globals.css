@@ -108,6 +108,28 @@ body {
 }
 
 /*
+ * Entrada de seção ao alcançar a viewport. Quem alterna `data-visivel`
+ * é o <Reveal>, com IntersectionObserver — aqui fica só a aparência.
+ *
+ * O estado inicial é invisível, e é por isso que existem dois seguros:
+ * o <noscript> no layout e a regra de prefers-reduced-motion abaixo.
+ * Sem eles, quem desliga JavaScript ou pede menos movimento não veria
+ * o conteúdo nunca.
+ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--duration-card) var(--ease),
+    transform var(--duration-card) var(--ease);
+}
+
+[data-reveal][data-visivel] {
+  opacity: 1;
+  transform: none;
+}
+
+/*
  * Transição de página. Só opacidade: qualquer deslocamento aqui move o
  * conteúdo inteiro a cada navegação e atrapalha quem lê enquanto navega.
  */

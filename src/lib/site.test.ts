@@ -26,23 +26,29 @@ describe("siteUrl", () => {
 });
 
 describe("permiteIndexacao", () => {
-  // O padrão é BLOQUEAR. Só a string exata "true" libera — qualquer
-  // outro valor, inclusive ausência, mantém o site fora do Google.
-  it("bloqueia por padrão", () => {
-    vi.stubEnv("NEXT_PUBLIC_ALLOW_INDEXING", "");
-    expect(permiteIndexacao()).toBe(false);
-  });
-
-  it("bloqueia para valor que não seja exatamente true", () => {
-    vi.stubEnv("NEXT_PUBLIC_ALLOW_INDEXING", "1");
-    expect(permiteIndexacao()).toBe(false);
-    vi.stubEnv("NEXT_PUBLIC_ALLOW_INDEXING", "yes");
-    expect(permiteIndexacao()).toBe(false);
-  });
-
-  it("libera com true explícito", () => {
-    vi.stubEnv("NEXT_PUBLIC_ALLOW_INDEXING", "true");
+  it("libera em produção", () => {
+    vi.stubEnv("VERCEL_ENV", "production");
     expect(permiteIndexacao()).toBe(true);
+  });
+
+  // Cada branch ganha uma URL própria na Vercel; indexar todas põe
+  // cópias do site competindo com o domínio real na busca pelo nome.
+  it("bloqueia preview e desenvolvimento da Vercel", () => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    expect(permiteIndexacao()).toBe(false);
+    vi.stubEnv("VERCEL_ENV", "development");
+    expect(permiteIndexacao()).toBe(false);
+  });
+
+  it("libera fora da Vercel, onde não há ambiente declarado", () => {
+    vi.stubEnv("VERCEL_ENV", undefined);
+    expect(permiteIndexacao()).toBe(true);
+  });
+
+  it("BLOCK_INDEXING desliga tudo, inclusive produção", () => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("BLOCK_INDEXING", "true");
+    expect(permiteIndexacao()).toBe(false);
   });
 });
 

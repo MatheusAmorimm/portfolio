@@ -24,13 +24,25 @@ export function siteUrl(): URL {
 }
 
 /**
- * Indexação continua bloqueada até o autor liberar. Portfólio
- * incompleto indexado é pior que portfólio nenhum: o Google guarda a
- * versão pela qual passou primeiro, e é ela que aparece na busca por
- * um nome que um recrutador vai procurar.
+ * Indexação LIBERADA por decisão do autor (24/08/2026).
+ *
+ * Duas exceções ficam de pé, e nenhuma delas contraria a decisão:
+ *
+ * 1. Preview de deploy nunca indexa. Cada branch na Vercel ganha uma URL
+ *    própria com o site inteiro; indexar todas cria conteúdo duplicado
+ *    competindo com o domínio real pela busca do próprio nome do autor.
+ *    Só `VERCEL_ENV === "production"` libera.
+ * 2. `BLOCK_INDEXING=true` desliga tudo, sem precisar de deploy novo —
+ *    é a saída de emergência se algo indevido for ao ar.
  */
 export function permiteIndexacao(): boolean {
-  return process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
+  if (process.env.BLOCK_INDEXING === "true") {
+    return false;
+  }
+
+  const ambiente = process.env.VERCEL_ENV;
+  // Fora da Vercel (local, ou outro host) segue a decisão do autor.
+  return ambiente === undefined || ambiente === "production";
 }
 
 /** Caminho da mesma página no outro idioma, para hreflang. */

@@ -1,7 +1,6 @@
 "use client";
 
-import { LazyMotion, m, useReducedMotion } from "motion/react";
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
@@ -13,45 +12,57 @@ type Props = {
 /**
  * Entrada de bloco ao alcançar a viewport: fade + subida curta.
  *
- * O subconjunto `domAnimation` (~18 KB) é importado de forma dinâmica,
- * e não estática: assim ele vira um chunk separado, fora do JS inicial
- * da página. `strict` proíbe `motion.*`, que traria o pacote completo
- * (35–50 KB) de volta sem avisar — spec § 6.2.
+ * Feito com `IntersectionObserver` e uma transição de CSS, e não com a
+ * biblioteca de animação. O motivo é medido: quando `Reveal` passou a
+ * ser usado em quase toda página, o subconjunto `domAnimation` deixou
+ * de ser carregado sob demanda e virou 45 KB gzip no JS inicial de todo
+ * mundo — contra um orçamento de 150 KB que já estava estourado. Isto
+ * aqui faz o mesmo efeito por algumas centenas de bytes, e funciona em
+ * qualquer navegador (ao contrário de `animation-timeline: view()`, que
+ * ainda não é universal).
  *
- * Anima só `opacity` e `transform`, `once: true`, 400 ms — os limites do
- * CLAUDE.md. O `data-reveal` é o gancho do fallback sem JavaScript
- * declarado no layout: sem ele, o `initial` renderizado no servidor
- * deixaria a seção invisível para sempre.
+ * A biblioteca continua onde CSS é de fato frágil: animar a SAÍDA antes
+ * da desmontagem, na troca de aba — e agora ela só carrega em /projetos.
  *
- * `prefers-reduced-motion` DESATIVA, não reduz — mas quem desativa é a
- * regra `[data-reveal]` do globals.css, não o `initial` daqui.
- * `useReducedMotion()` só tem resposta no cliente: ramificar o `initial`
- * por ele geraria HTML diferente do que o React monta na hidratação, e
- * o estado servido (invisível) continuaria dependendo de JavaScript
- * justamente para quem pediu menos movimento. O `initial` é sempre o
- * mesmo; o hook fica para o lado JS, onde divergir é inofensivo.
+ * O observador desconecta no primeiro disparo: a animação acontece uma
+ * vez, como manda o CLAUDE.md. Estado inicial, fallback sem JavaScript e
+ * `prefers-reduced-motion` vivem no globals.css, presos ao `data-reveal`.
  */
-const loadFeatures = () => import("./features").then((mod) => mod.default);
-
 export function Reveal({ children, delay = 0, className }: Props) {
-  const reduced = useReducedMotion();
+  const alvo = useRef<HTMLDivElement>(null);
+  const [visivel, setVisivel] = useState(false);
+
+  useEffect(() => {
+    const elemento = alvo.current;
+    if (!elemento) {
+      return;
+    }
+
+    // Já dentro da viewport na carga (seção acima da dobra): mostra sem
+    // esperar rolagem — sem isto, quem não rola nunca veria o conteúdo.
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        if (entradas.some((entrada) => entrada.isIntersecting)) {
+          setVisivel(true);
+          observador.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -64px 0px" },
+    );
+
+    observador.observe(elemento);
+    return () => observador.disconnect();
+  }, []);
 
   return (
-    <LazyMotion features={loadFeatures} strict>
-      <m.div
-        data-reveal=""
-        className={className}
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-64px" }}
-        transition={{
-          duration: reduced ? 0 : 0.4,
-          delay: reduced ? 0 : delay,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      >
-        {children}
-      </m.div>
-    </LazyMotion>
+    <div
+      ref={alvo}
+      data-reveal=""
+      data-visivel={visivel ? "" : undefined}
+      className={className}
+      style={delay ? { transitionDelay: `${delay}s` } : undefined}
+    >
+      {children}
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -64,7 +64,7 @@ export async function generateMetadata({
       description: t("description"),
       url: CAMINHOS["/"][locale],
     },
-    // Bloqueio de indexação até o autor liberar — ver lib/site.ts.
+    // Produção indexa; preview de deploy, não — ver lib/site.ts.
     robots: permiteIndexacao()
       ? { index: true, follow: true }
       : { index: false, follow: false },
@@ -82,7 +82,7 @@ export default async function LocaleLayout({
   }
 
   const t = await getTranslations({ locale, namespace: "seo" });
-
+  const mensagens = await getMessages();
 
   return (
     <html
@@ -102,7 +102,17 @@ export default async function LocaleLayout({
         <PersonJsonLd jobTitle={t("jobTitle")} />
       </head>
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider>
+        {/*
+          Só os namespaces que componentes de cliente realmente usam:
+          `locale` (seletor de idioma) e `contact` (formulário). Sem esta
+          poda, o dicionário INTEIRO — biografia, trajetória, textos dos
+          seis cases — era serializado no HTML de toda página só para
+          alimentar dois componentes. O resto é lido no servidor, onde
+          nunca precisou atravessar a rede.
+        */}
+        <NextIntlClientProvider
+          messages={{ locale: mensagens.locale, contact: mensagens.contact }}
+        >
           <Header />
           {/*
             <main> de verdade, e não uma div: sem o landmark o leitor de

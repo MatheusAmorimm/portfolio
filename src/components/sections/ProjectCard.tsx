@@ -21,9 +21,20 @@ type Props = {
    * elemento de LCP desta página.
    */
   priority?: boolean;
+  /**
+   * Nível do título do card, para a hierarquia da página fechar sem
+   * salto. Em /projetos o card vem logo abaixo do h1 e é h2; na home
+   * ele vem dentro da seção "Em destaque", que já é h2, e vira h3.
+   */
+  headingLevel?: 2 | 3;
 };
 
-export function ProjectCard({ project, priority = false }: Props) {
+export function ProjectCard({
+  project,
+  priority = false,
+  headingLevel = 3,
+}: Props) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   const locale = useLocale();
   const { slug, title, summary, year, stack, cover } = project.frontmatter;
 
@@ -50,14 +61,14 @@ export function ProjectCard({ project, priority = false }: Props) {
           {year}
         </p>
 
-        <h3 className="mt-2 font-display text-h3 font-semibold text-foreground">
+        <Heading className="mt-2 font-display text-h3 font-semibold text-foreground">
           <Link
             href={{ pathname: "/projetos/[slug]", params: { slug } }}
             className="after:absolute after:inset-0 after:content-['']"
           >
             {title[locale]}
           </Link>
-        </h3>
+        </Heading>
 
         <p className="mt-3 text-muted">{summary[locale]}</p>
 
