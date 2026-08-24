@@ -37,6 +37,9 @@
     "ibrasa": "Apprentice — IBRASA"
   },
   "project": {
+    "stack": "Technologies",
+    "repo": "View repository",
+    "demo": "View demo",
     "translationPending": "[→ preencher] The English version of this case study hasn't been written yet — the summary above stands in for it."
   },
   "nav": {

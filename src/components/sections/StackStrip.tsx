@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
 import { STACK_GROUPS } from "@/lib/stack";
 
@@ -27,11 +28,8 @@ export function StackStrip() {
               <dd className="mt-3">
                 <ul className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
-                    <li
-                      key={item}
-                      className="rounded-badge bg-surface px-2.5 py-1 font-mono text-label text-muted"
-                    >
-                      {item}
+                    <li key={item}>
+                      <Badge>{item}</Badge>
                     </li>
                   ))}
                 </ul>

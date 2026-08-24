@@ -37,6 +37,9 @@
     "ibrasa": "Aprendiz — IBRASA"
   },
   "project": {
+    "stack": "Tecnologias",
+    "repo": "Ver repositório",
+    "demo": "Ver demo",
     "translationPending": "[→ preencher] A versão em inglês deste case ainda não foi escrita — acima está o resumo."
   },
   "nav": {

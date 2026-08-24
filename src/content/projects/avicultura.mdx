@@ -1,0 +1,55 @@
+---
+slug: avicultura
+category: dados-ia
+featured: true
+draft: false
+year: 2025
+stack:
+  - Python
+  - scikit-learn
+  - pandas
+  - KNN
+  - SGD
+  - Regressão
+cover: /covers/avicultura.png
+links: {}
+title:
+  pt: Análise Preditiva de Conversão Alimentar em Avicultura
+  en: Predictive Analysis of Feed Conversion in Poultry Farming
+summary:
+  pt: Modelos de regressão sobre 5.813 lotes reais de uma integradora avícola para prever eficiência alimentar e identificar seus principais drivers.
+  en: Regression models over 5,813 real batches from a poultry integrator to predict feed efficiency and identify its main drivers.
+---
+
+<!-- lang:pt -->
+
+{/*
+  Texto literal de docs/conteudo-site.md § 6.1.
+
+  PROVISÓRIO, a confirmar com o autor:
+  - `year: 2025` — o ano não consta no conteudo-site.md nem no PRD.
+  - `title.en` e `summary.en` — tradução provisória do PT.
+  - `links` vazio — nenhuma URL de repositório foi fornecida.
+*/}
+
+## Contexto
+
+A conversão alimentar (kg de ração por kg de frango produzido) é o indicador que define a margem de uma integradora avícola. A base tinha 5.813 lotes e 40 variáveis cobrindo o ciclo produtivo inteiro — alojamento, nutrição, genética, mortalidade semanal, abate. A pergunta do negócio: dá para prever a eficiência de um lote, e o que mais a afeta?
+
+## Decisões técnicas
+
+*Escolher k pela generalização, não pelo melhor resultado de teste.* O k com maior R² de teste estava em overfitting evidente (k=5: R² treino 0,48 contra teste 0,24). O critério adotado foi o menor k com ΔR² ≤ 0,05, confirmado por validação cruzada 5-fold — chegou em k=25. É uma escolha que piora o número na tabela e melhora o modelo.
+
+*Ajustar o pré-processamento só no treino.* `StandardScaler` com `fit` exclusivamente no conjunto de treino. Sem isso, informação do teste vaza para o modelo e a métrica mente.
+
+*Traduzir o erro para a linguagem de quem paga.* Um MAE de 0,0264 não significa nada sozinho. Aplicado a um lote típico de 92.000 kg de frango, vira ~2.400 kg de ração — 1,5% do consumo. Esse é o número que a integradora entende.
+
+## Resultado
+
+O modelo linear (SGD) venceu o KNN por larga margem: R² de 0,56 contra 0,24, e com menos overfitting. O resultado sugere relação predominantemente linear e aditiva entre as variáveis produtivas e a conversão — cenário em que buscar vizinhos num espaço de 99 dimensões perde eficácia.
+
+O insight de negócio foi mais valioso que o modelo: **mortalidade tardia é o maior driver isolado da conversão alimentar** (r = 0,50 para mortalidade acumulada até 49 dias). E a correlação cresce ao longo do ciclo — ave que morre na semana 7 já consumiu quase toda a ração sem entregar peso no abate. A recomendação prática foi concentrar biosseguridade nas semanas 5 a 7, alavanca maior que ajustes de nutrição ou genética.
+
+## Aprendizados
+
+R² de 0,56 é teto modesto — clima, qualidade do lote de ração e manejo diário ficaram fora da base. Modelos de árvore provavelmente capturariam interações que a regressão linear não vê, mas estavam fora do escopo da matéria. E há uma limitação de uso real: parte das variáveis só é conhecida no fim do ciclo, o que restringe a aplicação preditiva antes do abate. Uma versão seguinte usaria apenas o que se sabe no dia do alojamento.
