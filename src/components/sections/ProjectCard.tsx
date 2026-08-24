@@ -12,7 +12,17 @@ import type { Project } from "@/lib/projects/loader";
  * Elevação sem sombra — em fundo escuro ela não aparece. Troca de
  * superfície e de contorno, como define a spec § 4.1.
  */
-export function ProjectCard({ project }: { project: Project }) {
+type Props = {
+  project: Project;
+  /**
+   * Card acima da dobra. Carrega a capa com prioridade (preload +
+   * fetchPriority alto) em vez de lazy: é ela que costuma ser o
+   * elemento de LCP desta página.
+   */
+  priority?: boolean;
+};
+
+export function ProjectCard({ project, priority = false }: Props) {
   const locale = useLocale();
   const { slug, title, summary, year, stack, cover } = project.frontmatter;
 
@@ -24,6 +34,7 @@ export function ProjectCard({ project }: { project: Project }) {
         width={1200}
         height={630}
         sizes="(min-width: 768px) 50vw, 100vw"
+        priority={priority}
         className="aspect-[1200/630] w-full object-cover"
       />
 

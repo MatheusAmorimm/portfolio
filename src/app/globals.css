@@ -80,11 +80,15 @@ body {
 }
 
 /*
- * Cascata de entrada do hero: headline → parágrafo → CTAs.
- * CSS puro por decisão técnica, não por economia: o hero contém o LCP,
- * e animá-lo por JavaScript faria o LCP esperar a hidratação.
+ * Entrada por cascata, em CSS puro.
+ *
+ * A regra vale para tudo que nasce acima da dobra, não só para o hero:
+ * elemento que carrega o LCP não pode depender de JavaScript para
+ * aparecer, porque aí a métrica passa a esperar a hidratação e o chunk
+ * de animação. Abaixo da dobra, quem anima é o <Reveal>, atrelado ao
+ * scroll.
  */
-@keyframes hero-rise {
+@keyframes rise {
   from {
     opacity: 0;
     transform: translateY(12px);
@@ -96,7 +100,11 @@ body {
 }
 
 .hero-rise {
-  animation: hero-rise var(--duration-hero) var(--ease) backwards;
+  animation: rise var(--duration-hero) var(--ease) backwards;
+}
+
+.card-rise {
+  animation: rise var(--duration-card) var(--ease) backwards;
 }
 
 /*
