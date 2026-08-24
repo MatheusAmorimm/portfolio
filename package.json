@@ -12,6 +12,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
     "next": "16.3.1",
     "next-intl": "^4.13.7",
     "react": "19.2.8",
