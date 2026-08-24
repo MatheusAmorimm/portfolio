@@ -12,7 +12,17 @@ import type { Project } from "@/lib/projects/loader";
  */
 const ABOVE_FOLD = 2;
 
-export function ProjectGrid({ projects }: { projects: Project[] }) {
+type Props = {
+  projects: Project[];
+  /**
+   * Quantos cards nascem acima da dobra nesta página. Na home o grid
+   * vem depois do hero, que é quem carrega o LCP — ali o valor é 0, e
+   * nenhuma capa disputa banda com o texto do hero.
+   */
+  aboveFold?: number;
+};
+
+export function ProjectGrid({ projects, aboveFold = ABOVE_FOLD }: Props) {
   const t = useTranslations("projects");
 
   if (projects.length === 0) {
@@ -22,14 +32,12 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
   return (
     <ul className="grid gap-6 sm:grid-cols-2">
       {projects.map((project, index) => {
-        const aboveFold = index < ABOVE_FOLD;
-        const card = (
-          <ProjectCard project={project} priority={aboveFold} />
-        );
+        const eager = index < aboveFold;
+        const card = <ProjectCard project={project} priority={eager} />;
 
         return (
           <li key={project.frontmatter.slug} className="h-full">
-            {aboveFold ? (
+            {eager ? (
               <div
                 className="card-rise h-full"
                 // 70 ms entre cards — faixa de stagger do CLAUDE.md.

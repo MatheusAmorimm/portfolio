@@ -44,6 +44,8 @@
   },
   "projects": {
     "title": "Projetos",
+    "featured": "Em destaque",
+    "seeAll": "Ver todos os projetos",
     "empty": "Nenhum projeto publicado nesta aba ainda.",
     "tabs": {
       "dados-ia": "Dados & IA",
