@@ -8,7 +8,7 @@ export function Hero() {
   const cv = CV[useLocale()];
 
   return (
-    <section className="hero-glow py-(--space-section)">
+    <section className="py-(--space-section)">
       <Container>
         <p
           className="hero-rise font-mono text-label uppercase tracking-[0.06em] text-muted"

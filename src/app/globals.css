@@ -100,16 +100,41 @@ body {
 }
 
 /*
- * Brilho difuso atrás do hero. CSS puro: não custa bundle e não toca o
- * elemento de LCP. `color-mix` mantém a cor derivada do token — trocar
- * o accent troca o brilho junto.
+ * Fundo em degradê: brilho quente no alto à esquerda, brilho frio à
+ * direita e escurecimento gradual até o rodapé. Todas as camadas vêm de
+ * `color-mix` sobre os tokens — trocar a paleta troca o fundo junto.
+ *
+ * As proporções NÃO são arbitrárias. O degradê clareia o fundo, e o
+ * teste de contraste só mede a cor chapada; medido à mão, o texto
+ * secundário sobre o ponto mais claro de cada camada dá 4,80:1 (dourado
+ * a 6%) e 4,84:1 (teal a 20%), ambos acima do mínimo AA de 4,5. A 10% o
+ * dourado cairia para 4,44 e reprovaria. Não aumente sem medir de novo.
+ *
+ * Vive num ::before fixo em vez de `background-attachment: fixed`, que
+ * causa repintura a cada quadro de scroll em vários navegadores móveis.
  */
-.hero-glow {
-  background: radial-gradient(
-    64rem 32rem at 15% -20%,
-    color-mix(in oklab, var(--color-accent) 12%, transparent),
-    transparent 70%
-  );
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      70rem 38rem at 12% -8%,
+      color-mix(in oklab, var(--color-accent) 6%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      64rem 44rem at 92% 4%,
+      color-mix(in oklab, var(--color-border-strong) 20%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-background) 92%, black) 0%,
+      var(--color-background) 38%,
+      color-mix(in oklab, var(--color-background) 86%, black) 100%
+    );
 }
 
 /*
