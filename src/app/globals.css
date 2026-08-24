@@ -59,11 +59,25 @@
 
   /* Movimento — ver spec § 4.4 */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /*
+   * Curva mais macia, de desaceleração longa, para as entradas ligadas
+   * ao scroll. O elemento chega rápido e assenta devagar — é o que faz
+   * a seção parecer "vindo" em vez de "aparecendo".
+   */
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-hover: 200ms;
   --duration-page: 250ms;
-  --duration-card: 400ms;
-  --duration-tab: 450ms;
+  /*
+   * Entrada de seção, card e painel de aba. Subiu de 400ms para 600ms a
+   * pedido do autor — ele quis a entrada mais lenta e com mais curso.
+   * 600ms é o teto do CLAUDE.md e continua sendo respeitado.
+   */
+  --duration-reveal: 600ms;
   --duration-hero: 600ms;
+
+  /* Quanto o elemento sobe ao entrar. */
+  --rise-hero: 12px;
+  --rise-section: 44px;
 }
 
 body {
@@ -91,7 +105,8 @@ body {
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    /* Cada usuário do keyframe define seu próprio curso. */
+    transform: translateY(var(--rise-de, var(--rise-hero)));
   }
   to {
     opacity: 1;
@@ -99,12 +114,23 @@ body {
   }
 }
 
+/*
+ * O hero sobe pouco e usa a curva padrão: ele carrega o LCP e nasce na
+ * tela, sem scroll para justificar percurso longo.
+ */
 .hero-rise {
   animation: rise var(--duration-hero) var(--ease) backwards;
 }
 
+/*
+ * Card e painel de aba entram como as seções: curso longo e curva macia.
+ * `card-rise` é usado tanto pelos cards acima da dobra quanto pelo
+ * painel que remonta a cada troca de aba — a entrada é a mesma coisa nos
+ * dois lugares, que é o que o autor pediu.
+ */
 .card-rise {
-  animation: rise var(--duration-card) var(--ease) backwards;
+  --rise-de: var(--rise-section);
+  animation: rise var(--duration-reveal) var(--ease-soft) backwards;
 }
 
 /*
@@ -118,10 +144,10 @@ body {
  */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(var(--rise-section));
   transition:
-    opacity var(--duration-card) var(--ease),
-    transform var(--duration-card) var(--ease);
+    opacity var(--duration-reveal) var(--ease-soft),
+    transform var(--duration-reveal) var(--ease-soft);
 }
 
 [data-reveal][data-visivel] {

@@ -3703,25 +3703,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^13.1.1":
-  version: 13.1.1
-  resolution: "framer-motion@npm:13.1.1"
-  dependencies:
-    motion-dom: "npm:^13.1.1"
-    motion-utils: "npm:^13.0.0"
-    tslib: "npm:^2.4.0"
-  peerDependencies:
-    react: ^18.0.0 || ^19.0.0
-    react-dom: ^18.0.0 || ^19.0.0
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: 10c0/db1601442047bbd06286ef9fd5c9af06b4530984dc0cd0f77dffa8590a8dbcac92db05e992b62041455b55db6791bdfba8cd7c0aaa920a2325eba2c277fb7baa
-  languageName: node
-  linkType: hard
-
 "fsevents@npm:~2.3.2, fsevents@npm:~2.3.3":
   version: 2.3.3
   resolution: "fsevents@npm:2.3.3"
@@ -5319,40 +5300,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"motion-dom@npm:^13.1.1":
-  version: 13.1.1
-  resolution: "motion-dom@npm:13.1.1"
-  dependencies:
-    motion-utils: "npm:^13.0.0"
-  checksum: 10c0/c7697e6937920f9f584c04d59fe8589e7bbca18a85d2cf1ec7cf4ee229fb29054dda41bec6db2dde4fdf43436f17cfc2a3bbab06d2d9f8232dfa7921e0382d20
-  languageName: node
-  linkType: hard
-
-"motion-utils@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "motion-utils@npm:13.0.0"
-  checksum: 10c0/4b279ce85f71926d668ff5966feb898b174541d16952a61c7150982388553266602ecd2a76e057530076ff8f38d06672e585639ddc73c41dd1a67d04aaa3662d
-  languageName: node
-  linkType: hard
-
-"motion@npm:^13.1.1":
-  version: 13.1.1
-  resolution: "motion@npm:13.1.1"
-  dependencies:
-    framer-motion: "npm:^13.1.1"
-    tslib: "npm:^2.4.0"
-  peerDependencies:
-    react: ^18.0.0 || ^19.0.0
-    react-dom: ^18.0.0 || ^19.0.0
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: 10c0/e02155269114c3757e1bf73abb2d5dd58cbb47f5f60465690e78ed94152e21b14a94680a6be29299b8d5fc8df34a5d78167e7948e2d2b849b55c26ad58690eb6
-  languageName: node
-  linkType: hard
-
 "ms@npm:^2.1.1, ms@npm:^2.1.3":
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
@@ -5766,7 +5713,6 @@ __metadata:
     eslint: "npm:^9"
     eslint-config-next: "npm:16.3.1"
     gray-matter: "npm:^4.0.3"
-    motion: "npm:^13.1.1"
     next: "npm:16.3.1"
     next-intl: "npm:^4.13.7"
     react: "npm:19.2.8"

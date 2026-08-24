@@ -1,12 +1,8 @@
 "use client";
 
-import { AnimatePresence, LazyMotion, m, useReducedMotion } from "motion/react";
 import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { DEFAULT_TAB, type TabId } from "@/lib/tabs";
-
-const loadFeatures = () =>
-  import("@/components/motion/features").then((mod) => mod.default);
 
 type Tab = { id: TabId; label: string; panel: ReactNode };
 
@@ -26,14 +22,16 @@ type Props = {
  * `scroll: false`, então a aba sobrevive a recarga e a link
  * compartilhado sem dar salto na página.
  *
- * A troca usa `AnimatePresence mode="wait"`: a saída termina antes da
- * entrada começar. É o caso em que CSS puro fica frágil — não há como
- * animar a saída de um elemento que já foi desmontado.
+ * A troca de aba usa a MESMA entrada das seções que aparecem ao rolar:
+ * o painel carrega `key={active}`, então React o remonta a cada troca e
+ * a animação de CSS roda de novo. Não há animação de saída — o painel
+ * antigo some na hora e o novo entra. Foi uma escolha: a versão com
+ * saída dependia da biblioteca de animação, que custava 46 KB gzip
+ * nesta página, e a entrada é o que o autor pediu para destacar.
  */
 export function Tabs({ tabs, initial }: Props) {
   const [active, setActive] = useState<TabId>(initial);
   const router = useRouter();
-  const reduced = useReducedMotion();
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
 
   function select(id: TabId) {
@@ -106,32 +104,23 @@ export function Tabs({ tabs, initial }: Props) {
         })}
       </div>
 
-      <LazyMotion features={loadFeatures} strict>
-        <AnimatePresence mode="wait" initial={false}>
-          <m.div
-            key={active}
-            id={`panel-${active}`}
-            role="tabpanel"
-            aria-labelledby={`tab-${active}`}
-            // O painel entra na ordem de tabulação porque pode não ter
-            // nenhum elemento focável dentro — é o caso da aba sem
-            // projetos publicados, que hoje só tem um parágrafo. Sem
-            // isto, o Tab pula do seletor de abas direto para o rodapé
-            // e quem navega por teclado nunca lê o painel.
-            tabIndex={0}
-            initial={reduced ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduced ? undefined : { opacity: 0, y: -8 }}
-            transition={{
-              duration: reduced ? 0 : 0.3,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="mt-(--space-block)"
-          >
-            {panel?.panel}
-          </m.div>
-        </AnimatePresence>
-      </LazyMotion>
+      <div
+        // `key` é o mecanismo da animação: trocar de aba remonta o
+        // painel, e a animação de CSS `card-rise` roda outra vez.
+        key={active}
+        id={`panel-${active}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${active}`}
+        // O painel entra na ordem de tabulação porque pode não ter
+        // nenhum elemento focável dentro — é o caso da aba sem projetos
+        // publicados, que hoje só tem um parágrafo. Sem isto, o Tab pula
+        // do seletor de abas direto para o rodapé e quem navega por
+        // teclado nunca lê o painel.
+        tabIndex={0}
+        className="card-rise mt-(--space-block)"
+      >
+        {panel?.panel}
+      </div>
     </>
   );
 }
