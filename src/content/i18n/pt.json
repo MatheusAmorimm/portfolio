@@ -42,6 +42,24 @@
     "hsprevent": "Assistente de Prevenção a Fraude — HS Prevent",
     "ibrasa": "Aprendiz — IBRASA"
   },
+  "contact": {
+    "titulo": "Vamos conversar",
+    "texto": "Estou buscando estágio em dados e IA para 2027. Se você tem uma vaga, uma pergunta sobre algum projeto daqui, ou só quer trocar ideia sobre alguma coisa que está construindo — escreva.",
+    "status": "Disponível para estágio · São Paulo · presencial, híbrido ou remoto",
+    "nome": "Nome",
+    "email": "E-mail",
+    "mensagem": "Mensagem",
+    "enviar": "Enviar mensagem",
+    "enviando": "Enviando…",
+    "sucesso": "Mensagem enviada. Respondo assim que puder.",
+    "outrosCanais": "Outros canais",
+    "erro": {
+      "invalido": "Confira os campos: nome, e-mail válido e mensagem com pelo menos 20 caracteres.",
+      "limite": "Muitas mensagens deste dispositivo. Tente de novo mais tarde ou escreva direto para o e-mail abaixo.",
+      "indisponivel": "O envio pelo formulário está indisponível. Use o e-mail abaixo.",
+      "falha": "Não consegui enviar agora. Tente de novo ou use o e-mail abaixo."
+    }
+  },
   "projects": {
     "title": "Projetos",
     "featured": "Em destaque",
