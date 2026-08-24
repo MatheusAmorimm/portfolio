@@ -35,6 +35,9 @@
     "hsprevent": "Fraud Prevention Assistant — HS Prevent",
     "ibrasa": "Apprentice — IBRASA"
   },
+  "project": {
+    "translationPending": "[→ preencher] The English version of this case study hasn't been written yet — the summary above stands in for it."
+  },
   "nav": {
     "home": "Home",
     "mainNavigation": "Main navigation",

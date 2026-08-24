@@ -35,6 +35,9 @@
     "hsprevent": "Assistente de Prevenção a Fraude — HS Prevent",
     "ibrasa": "Aprendiz — IBRASA"
   },
+  "project": {
+    "translationPending": "[→ preencher] A versão em inglês deste case ainda não foi escrita — acima está o resumo."
+  },
   "nav": {
     "home": "Início",
     "mainNavigation": "Navegação principal",
