@@ -42,6 +42,11 @@
     "hsprevent": "Assistente de Prevenção a Fraude — HS Prevent",
     "ibrasa": "Aprendiz — IBRASA"
   },
+  "seo": {
+    "title": "Matheus Amorim — Ciência de Dados e Engenharia",
+    "description": "Estudante de Ciência de Dados e IA na PUC-SP. Projetos de machine learning, desenvolvimento web e infraestrutura. Buscando estágio em dados.",
+    "jobTitle": "Analista de Infraestrutura e Projetos de TI"
+  },
   "contact": {
     "titulo": "Vamos conversar",
     "texto": "Estou buscando estágio em dados e IA para 2027. Se você tem uma vaga, uma pergunta sobre algum projeto daqui, ou só quer trocar ideia sobre alguma coisa que está construindo — escreva.",

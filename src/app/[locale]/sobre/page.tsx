@@ -1,10 +1,34 @@
-import { useLocale, useTranslations } from "next-intl";
+import { hasLocale, useLocale, useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import { CAMINHOS } from "@/lib/site";
 import { Reveal } from "@/components/motion/Reveal";
 import { Timeline } from "@/components/sections/Timeline";
 import { StackStrip } from "@/components/sections/StackStrip";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { CV } from "@/lib/cv";
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/sobre">): Promise<Metadata> {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    return {};
+  }
+
+  const t = await getTranslations({ locale, namespace: "about" });
+  const caminhos = CAMINHOS["/sobre"];
+
+  return {
+    title: t("title"),
+    alternates: {
+      canonical: caminhos[locale],
+      languages: { "pt-BR": caminhos.pt, "en-US": caminhos.en },
+    },
+  };
+}
 
 export default function AboutPage() {
   const t = useTranslations("about");

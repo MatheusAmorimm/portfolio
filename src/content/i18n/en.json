@@ -42,6 +42,11 @@
     "hsprevent": "Fraud Prevention Assistant — HS Prevent",
     "ibrasa": "Apprentice — IBRASA"
   },
+  "seo": {
+    "title": "Matheus Amorim — Data Science and Engineering",
+    "description": "Data Science and AI student at PUC-SP. Machine learning, web development and infrastructure projects. Looking for a data internship.",
+    "jobTitle": "Infrastructure and IT Projects Analyst"
+  },
   "contact": {
     "titulo": "Get in touch",
     "texto": "I'm looking for a data and AI internship starting in 2027. If you have a role, a question about any of the projects here, or just want to talk about something you're building — write.",

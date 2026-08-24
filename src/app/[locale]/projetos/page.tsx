@@ -1,9 +1,33 @@
+import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import { CAMINHOS } from "@/lib/site";
 import { ProjectGrid } from "@/components/sections/ProjectGrid";
 import { Container } from "@/components/ui/Container";
 import { Tabs } from "@/components/ui/Tabs";
 import { listProjects } from "@/lib/projects/loader";
 import { projectsForTab, resolveTab, TABS } from "@/lib/tabs";
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/projetos">): Promise<Metadata> {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    return {};
+  }
+
+  const t = await getTranslations({ locale, namespace: "projects" });
+  const caminhos = CAMINHOS["/projetos"];
+
+  return {
+    title: t("title"),
+    alternates: {
+      canonical: caminhos[locale],
+      languages: { "pt-BR": caminhos.pt, "en-US": caminhos.en },
+    },
+  };
+}
 
 export default async function ProjectsPage({
   searchParams,

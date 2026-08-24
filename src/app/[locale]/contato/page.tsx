@@ -1,4 +1,8 @@
-import { useTranslations } from "next-intl";
+import { hasLocale, useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import { CAMINHOS } from "@/lib/site";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
@@ -9,6 +13,26 @@ const LINKS = [
   { key: "linkedin", href: SOCIAL.linkedin },
   { key: "email", href: `mailto:${SOCIAL.email}` },
 ] as const;
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/contato">): Promise<Metadata> {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    return {};
+  }
+
+  const t = await getTranslations({ locale, namespace: "contact" });
+  const caminhos = CAMINHOS["/contato"];
+
+  return {
+    title: t("titulo"),
+    alternates: {
+      canonical: caminhos[locale],
+      languages: { "pt-BR": caminhos.pt, "en-US": caminhos.en },
+    },
+  };
+}
 
 export default function ContactPage() {
   const t = useTranslations("contact");

@@ -1,5 +1,9 @@
+import { hasLocale } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
+import { caminhoDoCase } from "@/lib/site";
 import { mdxComponents } from "@/components/mdx/components";
 import { Reveal } from "@/components/motion/Reveal";
 import { Badge } from "@/components/ui/Badge";
@@ -17,6 +21,36 @@ export function generateStaticParams() {
   return listProjects().map((project) => ({
     slug: project.frontmatter.slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/projetos/[slug]">): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const project = getProject(slug);
+  if (!project || !hasLocale(routing.locales, locale)) {
+    return {};
+  }
+
+  const { title, summary, cover } = project.frontmatter;
+  const caminhos = caminhoDoCase(slug);
+
+  return {
+    title: title[locale],
+    description: summary[locale],
+    alternates: {
+      canonical: caminhos[locale],
+      languages: { "pt-BR": caminhos.pt, "en-US": caminhos.en },
+    },
+    openGraph: {
+      type: "article",
+      title: title[locale],
+      description: summary[locale],
+      url: caminhos[locale],
+      // A capa gerada tem 1200x630, a proporção que as redes recortam.
+      images: [{ url: cover, width: 1200, height: 630 }],
+    },
+  };
 }
 
 export default async function CasePage({
