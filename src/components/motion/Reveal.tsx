@@ -23,8 +23,13 @@ type Props = {
  * declarado no layout: sem ele, o `initial` renderizado no servidor
  * deixaria a seção invisível para sempre.
  *
- * `prefers-reduced-motion` DESATIVA, não reduz: o bloco global do
- * globals.css só alcança animação de CSS, e esta é orquestrada por JS.
+ * `prefers-reduced-motion` DESATIVA, não reduz — mas quem desativa é a
+ * regra `[data-reveal]` do globals.css, não o `initial` daqui.
+ * `useReducedMotion()` só tem resposta no cliente: ramificar o `initial`
+ * por ele geraria HTML diferente do que o React monta na hidratação, e
+ * o estado servido (invisível) continuaria dependendo de JavaScript
+ * justamente para quem pediu menos movimento. O `initial` é sempre o
+ * mesmo; o hook fica para o lado JS, onde divergir é inofensivo.
  */
 const loadFeatures = () => import("./features").then((mod) => mod.default);
 
@@ -36,7 +41,7 @@ export function Reveal({ children, delay = 0, className }: Props) {
       <m.div
         data-reveal=""
         className={className}
-        initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-64px" }}
         transition={{

@@ -11,7 +11,13 @@
     "daily": "Day to day",
     "building": "I build with",
     "infra": "Infrastructure",
-    "learning": "Learning"
+    "learning": "Learning",
+    "items": {
+      "reverseProxy": "reverse proxy",
+      "appliedStatistics": "applied statistics",
+      "dataMining": "data mining",
+      "advancedSql": "advanced SQL"
+    }
   },
   "about": {
     "title": "About",

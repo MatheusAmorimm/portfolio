@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { Reveal } from "@/components/motion/Reveal";
 import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
-import { STACK_GROUPS } from "@/lib/stack";
+import { STACK_GROUPS, stackItemKey } from "@/lib/stack";
 
 export function StackStrip() {
   const t = useTranslations("stack");
@@ -32,8 +32,12 @@ export function StackStrip() {
               <dd className="mt-3">
                 <ul className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
-                    <li key={item}>
-                      <Badge>{item}</Badge>
+                    <li key={stackItemKey(item)}>
+                      <Badge>
+                        {typeof item === "string"
+                          ? item
+                          : t(`items.${item.i18n}`)}
+                      </Badge>
                     </li>
                   ))}
                 </ul>

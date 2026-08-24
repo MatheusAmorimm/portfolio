@@ -11,7 +11,13 @@
     "daily": "Uso no dia a dia",
     "building": "Construo com",
     "infra": "Infraestrutura",
-    "learning": "Estudando"
+    "learning": "Estudando",
+    "items": {
+      "reverseProxy": "proxy reverso",
+      "appliedStatistics": "estatística aplicada",
+      "dataMining": "mineração de dados",
+      "advancedSql": "SQL avançado"
+    }
   },
   "about": {
     "title": "Sobre",

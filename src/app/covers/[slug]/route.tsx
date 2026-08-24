@@ -40,7 +40,12 @@ export async function GET(
     return new Response("Capa não encontrada", { status: 404 });
   }
 
-  const { title, year, stack } = project.frontmatter;
+  // Nada de `title` aqui: a capa é a MESMA nos dois idiomas (o proxy de
+  // i18n ignora caminhos com ponto), então gravar o título em português
+  // punha texto PT dentro da página inglesa. O slug é identificador, não
+  // se traduz, e o título já aparece como texto logo abaixo do card —
+  // no image ele era redundante além de errado.
+  const { slug: id, year, stack } = project.frontmatter;
 
   return new ImageResponse(
     (
@@ -81,10 +86,11 @@ export async function GET(
               fontSize: 68,
               fontWeight: 600,
               lineHeight: 1.15,
+              letterSpacing: -1,
               color: colorToken("foreground"),
             }}
           >
-            {title.pt}
+            {id}
           </div>
         </div>
 

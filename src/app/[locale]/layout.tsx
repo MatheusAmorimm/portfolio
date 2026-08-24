@@ -52,9 +52,16 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
           <Header />
-          <div id="conteudo" className="flex-1">
+          {/*
+            <main> de verdade, e não uma div: sem o landmark o leitor de
+            tela não tem "ir para o conteúdo principal", e sem o
+            tabIndex={-1} o alvo não é focável — o link de pular
+            conteúdo movia a rolagem mas deixava o foco no header, que é
+            o mesmo que não ter link nenhum para quem usa teclado.
+          */}
+          <main id="conteudo" tabIndex={-1} className="flex-1">
             {children}
-          </div>
+          </main>
           <Footer />
         </NextIntlClientProvider>
       </body>

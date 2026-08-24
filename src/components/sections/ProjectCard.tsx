@@ -33,9 +33,15 @@ export function ProjectCard({ project, priority = false }: Props) {
         alt=""
         width={1200}
         height={630}
-        sizes="(min-width: 768px) 50vw, 100vw"
+        // Descreve o layout real, não uma aproximação: o grid vira duas
+        // colunas em 640px (breakpoint `sm`), e acima de 1120px o
+        // Container trava a largura, então o card para de crescer em
+        // 516px = (1120 - 64 de gutter - 24 de gap) / 2. Sem o teto, um
+        // monitor de 1920px baixaria o candidato de 1080px para exibir
+        // 516 — e esta é a imagem de LCP da página.
+        sizes="(min-width: 1120px) 516px, (min-width: 640px) 50vw, 100vw"
         priority={priority}
-        className="aspect-[1200/630] w-full object-cover"
+        className="aspect-1200/630 w-full object-cover"
       />
 
       <div className="flex flex-1 flex-col p-5">

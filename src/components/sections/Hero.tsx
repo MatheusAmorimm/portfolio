@@ -17,23 +17,30 @@ export function Hero() {
           {t("name")}
         </p>
 
+        {/*
+          A headline entra SEM atraso porque é ela o elemento de LCP da
+          home. Com `fill-mode: backwards`, qualquer atraso a mantém em
+          opacity 0 — e o Chrome não considera candidato a LCP o que está
+          invisível, então cada milissegundo de atraso aqui é somado à
+          métrica. A cascata continua existindo nos elementos abaixo.
+        */}
         <h1
           className="hero-rise mt-4 max-w-[20ch] font-display text-display font-semibold leading-[1.1] tracking-tight text-balance"
-          style={{ animationDelay: "80ms" }}
+          style={{ animationDelay: "0ms" }}
         >
           {t("headline")}
         </h1>
 
         <p
           className="hero-rise mt-6 max-w-(--width-prose) text-muted"
-          style={{ animationDelay: "160ms" }}
+          style={{ animationDelay: "80ms" }}
         >
           {t("paragraph")}
         </p>
 
         <div
           className="hero-rise mt-10 flex flex-wrap gap-3"
-          style={{ animationDelay: "240ms" }}
+          style={{ animationDelay: "160ms" }}
         >
           <Button href="/projetos">{t("ctaProjects")}</Button>
           {/*

@@ -113,6 +113,12 @@ export function Tabs({ tabs, initial }: Props) {
             id={`panel-${active}`}
             role="tabpanel"
             aria-labelledby={`tab-${active}`}
+            // O painel entra na ordem de tabulação porque pode não ter
+            // nenhum elemento focável dentro — é o caso da aba sem
+            // projetos publicados, que hoje só tem um parágrafo. Sem
+            // isto, o Tab pula do seletor de abas direto para o rodapé
+            // e quem navega por teclado nunca lê o painel.
+            tabIndex={0}
             initial={reduced ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={reduced ? undefined : { opacity: 0, y: -8 }}

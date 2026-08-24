@@ -147,15 +147,35 @@ body::before {
 
 /*
  * prefers-reduced-motion DESATIVA a animação, não a reduz.
- * As variantes de JS são tratadas separadamente com useReducedMotion().
+ *
+ * Zerar a DURAÇÃO não basta quando existe `animation-delay` com
+ * `fill-mode: backwards`, que é o caso da cascata do hero e dos cards:
+ * o atraso continua valendo e o elemento fica preso no quadro inicial
+ * (opacity 0) por até 160 ms antes de estalar na tela. Ou seja, o pop-in
+ * que a preferência existe justamente para eliminar. Por isso os atrasos
+ * também vão a zero aqui.
  */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
+  }
+
+  /*
+   * Desliga também o que é animado por JavaScript. O <Reveal> renderiza
+   * `opacity: 0` inline no servidor — determinístico de propósito, para
+   * não divergir na hidratação —, então quem desativa o movimento
+   * precisa desta regra para ver o conteúdo já no primeiro quadro. Mesmo
+   * gancho do fallback sem JS declarado no layout.
+   */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
