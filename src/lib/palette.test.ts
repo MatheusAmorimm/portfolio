@@ -1,20 +1,6 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { contrastRatio } from "./contrast";
-
-const css = readFileSync(
-  join(process.cwd(), "src/app/globals.css"),
-  "utf8",
-);
-
-function token(name: string): string {
-  const match = new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`).exec(css);
-  if (!match) {
-    throw new Error(`Token --color-${name} não encontrado em globals.css`);
-  }
-  return match[1];
-}
+import { colorToken as token } from "./tokens";
 
 // Todo par texto/fundo que o site realmente produz.
 const PAIRS: Array<[string, string, number]> = [
@@ -44,5 +30,9 @@ describe("paleta", () => {
     expect(
       contrastRatio(token("border-strong"), token("surface")),
     ).toBeGreaterThan(1.1);
+  });
+
+  it("token inexistente falha alto, em vez de virar cor vazia", () => {
+    expect(() => token("nao-existe")).toThrow("globals.css");
   });
 });
