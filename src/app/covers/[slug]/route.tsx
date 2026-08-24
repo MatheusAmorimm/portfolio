@@ -21,6 +21,48 @@ export const dynamicParams = false;
 
 const SIZE = { width: 1200, height: 630 };
 
+/**
+ * Cada renderização instancia Satori e o conversor para PNG, que são
+ * caros. Sem memória, seis capas pedidas ao mesmo tempo viravam seis
+ * renderizações simultâneas e derrubavam os workers do Next com
+ * `WorkerError` — em desenvolvimento, todas as capas voltavam 500.
+ *
+ * `prontas` guarda o PNG já gerado; `emVoo` faz requisições
+ * concorrentes da MESMA capa esperarem uma única renderização em vez de
+ * dispararem uma cada. A chave inclui os dados desenhados, então editar
+ * o case regenera a capa sem precisar reiniciar nada.
+ */
+const prontas = new Map<string, ArrayBuffer>();
+const emVoo = new Map<string, Promise<ArrayBuffer>>();
+
+async function renderizar(
+  chave: string,
+  desenhar: () => ImageResponse,
+): Promise<ArrayBuffer> {
+  const pronta = prontas.get(chave);
+  if (pronta) {
+    return pronta;
+  }
+
+  const jaEmVoo = emVoo.get(chave);
+  if (jaEmVoo) {
+    return jaEmVoo;
+  }
+
+  const voo = desenhar()
+    .arrayBuffer()
+    .then((bytes) => {
+      prontas.set(chave, bytes);
+      return bytes;
+    })
+    .finally(() => {
+      emVoo.delete(chave);
+    });
+
+  emVoo.set(chave, voo);
+  return voo;
+}
+
 export function generateStaticParams() {
   return listProjects().map((project) => ({
     slug: `${project.frontmatter.slug}.png`,
@@ -47,9 +89,13 @@ export async function GET(
   // se traduz, e o título já aparece como texto logo abaixo do card —
   // no image ele era redundante além de errado.
   const { slug: id, year, stack } = project.frontmatter;
+  const tecnologias = neutralStack(stack);
 
-  return new ImageResponse(
-    (
+  const bytes = await renderizar(
+    `${id}|${year}|${tecnologias.join(",")}`,
+    () =>
+      new ImageResponse(
+        (
       <div
         style={{
           width: "100%",
@@ -96,10 +142,21 @@ export async function GET(
         </div>
 
         <div style={{ display: "flex", fontSize: 26, color: colorToken("muted") }}>
-          {neutralStack(stack).join("  ·  ")}
+          {tecnologias.join("  ·  ")}
         </div>
       </div>
-    ),
-    SIZE,
+        ),
+        SIZE,
+      ),
   );
+
+  return new Response(bytes, {
+    headers: {
+      "Content-Type": "image/png",
+      // A capa só muda quando o case muda, e aí a chave da memória muda
+      // junto. Um ano de cache imutável é seguro e tira a imagem do
+      // caminho crítico em toda visita seguinte.
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
+  });
 }

@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
@@ -17,7 +17,47 @@ export type Project = {
   body: SplitBody;
 };
 
+/**
+ * Memória do último carregamento, invalidada quando qualquer arquivo do
+ * diretório muda de nome ou de data de modificação.
+ *
+ * Sem isto, `listProjects` relia e reparseava TODOS os MDX a cada
+ * chamada — e há cinco chamadores por request em algumas rotas. No log
+ * do autor isso aparecia como `generate-params: 1154ms`, e a rajada de
+ * leituras simultâneas era o que derrubava os workers do Next quando
+ * várias capas eram pedidas ao mesmo tempo.
+ *
+ * A impressão digital usa `statSync`, que não abre o arquivo: editar um
+ * case continua refletindo na hora em desenvolvimento.
+ */
+let memoria: { digital: string; projetos: Project[] } | null = null;
+
+function digitalDoDiretorio(dir: string): string {
+  return readdirSync(dir)
+    .filter((file) => file.endsWith(".mdx"))
+    .sort()
+    .map((file) => `${file}:${statSync(join(dir, file)).mtimeMs}`)
+    .join("|");
+}
+
 export function listProjects(dir: string = CONTENT_DIR): Project[] {
+  // Fixtures de teste passam um diretório próprio e não usam a memória:
+  // cada caso precisa de leitura limpa, inclusive os que trocam NODE_ENV.
+  if (dir !== CONTENT_DIR) {
+    return carregar(dir);
+  }
+
+  const digital = digitalDoDiretorio(dir);
+  if (memoria && memoria.digital === digital) {
+    return memoria.projetos;
+  }
+
+  const projetos = carregar(dir);
+  memoria = { digital, projetos };
+  return projetos;
+}
+
+function carregar(dir: string): Project[] {
   const files = readdirSync(dir)
     .filter((file) => file.endsWith(".mdx") && !file.startsWith("_"))
     .sort();
