@@ -1,8 +1,6 @@
-import { hasLocale } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
-import { routing } from "@/i18n/routing";
 import { getProject, listProjects } from "@/lib/projects/loader";
 import { compileBody } from "@/lib/projects/render";
 
@@ -26,10 +24,7 @@ export default async function CasePage({
     notFound();
   }
 
-  const rawLocale = await getLocale();
-  const locale = hasLocale(routing.locales, rawLocale)
-    ? rawLocale
-    : routing.defaultLocale;
+  const locale = await getLocale();
   const t = await getTranslations("project");
 
   const source = locale === "en" ? project.body.en : project.body.pt;

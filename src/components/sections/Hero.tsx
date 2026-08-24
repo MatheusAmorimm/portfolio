@@ -1,9 +1,11 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { CV } from "@/lib/cv";
 
 export function Hero() {
   const t = useTranslations("hero");
+  const cv = CV[useLocale()];
 
   return (
     <section className="py-(--space-section)">
@@ -34,9 +36,20 @@ export function Hero() {
           style={{ animationDelay: "240ms" }}
         >
           <Button href="/projetos">{t("ctaProjects")}</Button>
-          <Button href="/sobre" variant="secondary">
-            {t("ctaCv")}
-          </Button>
+          {/*
+            Sem currículo neste idioma, o CTA leva para /sobre, onde a
+            seção de currículo explica a ausência — melhor que um botão
+            de download que daria 404.
+          */}
+          {cv ? (
+            <Button href={cv} variant="secondary" external>
+              {t("ctaCv")}
+            </Button>
+          ) : (
+            <Button href="/sobre" variant="secondary">
+              {t("ctaCv")}
+            </Button>
+          )}
         </div>
       </Container>
     </section>

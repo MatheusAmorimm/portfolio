@@ -1,10 +1,13 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Timeline } from "@/components/sections/Timeline";
 import { StackStrip } from "@/components/sections/StackStrip";
+import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { CV } from "@/lib/cv";
 
 export default function AboutPage() {
   const t = useTranslations("about");
+  const cv = CV[useLocale()];
 
   return (
     <>
@@ -36,7 +39,15 @@ export default function AboutPage() {
             >
               {t("cvTitle")}
             </h2>
-            <p className="mt-3 text-muted">{t("cvPending")}</p>
+            {cv ? (
+              <div className="mt-4">
+                <Button href={cv} variant="secondary" external>
+                  {t("cvDownload")}
+                </Button>
+              </div>
+            ) : (
+              <p className="mt-3 text-muted">{t("cvPending")}</p>
+            )}
           </section>
         </Container>
       </section>
