@@ -1,0 +1,48 @@
+---
+slug: seneb
+category: web
+featured: true
+draft: false
+year: 2026
+stack:
+  - Tauri
+  - Next.js
+  - React
+  - FastAPI
+  - MongoDB Atlas
+  - Desktop
+cover: /covers/seneb.png
+links: {}
+title:
+  pt: Seneb
+  en: Seneb
+summary:
+  pt: Aplicação desktop de controle financeiro colaborativo, construída para uma usuária real que precisava enxergar o dinheiro sem enxergar fórmula.
+  en: Collaborative financial control desktop application, built for a real user who needed to see the money without seeing a formula.
+---
+
+<!-- lang:pt -->
+
+## Contexto
+
+Meu projeto pessoal de maior tempo de desenvolvimento, e o único que nasceu de um usuário com nome e rosto: minha esposa controlava as finanças da casa em Excel e a queixa era sempre a mesma — para ver qualquer coisa, precisava atravessar uma fórmula. Ela queria o resultado, não a planilha.
+
+Isso definiu três requisitos antes de qualquer linha de código: a interface precisava ser visual em primeiro lugar; precisava rodar como aplicativo, não como aba de navegador com login; e precisava ser colaborativa, porque o dinheiro da casa é de duas pessoas.
+
+## Decisões técnicas
+
+*Tauri em vez de Electron.* Primeira vez que construí para desktop, e a escolha foi pela alternativa mais recente. O ganho concreto do Tauri é usar o webview nativo do sistema operacional em vez de embarcar um Chromium inteiro — o que significa binário de poucos megabytes e consumo de memória bem menor que o equivalente em Electron. Para um app que fica aberto em segundo plano no computador de casa, isso importa.
+
+*Backend separado, em FastAPI.* Manter a lógica financeira num serviço próprio, fora do runtime desktop, é o que torna a parte colaborativa possível: duas pessoas em máquinas diferentes precisam ver o mesmo estado. Um app desktop com banco local resolveria o problema da esposa e nenhum dos dois.
+
+*MongoDB Atlas.* Escolhido por familiaridade — é o banco com que trabalho mais no dia a dia, e num projeto pessoal de longa duração a velocidade de iteração conta. É também a decisão que eu revisitaria: domínio financeiro pede precisão decimal e garantias transacionais que um banco relacional entrega com menos esforço. Num projeto posterior, no mesmo tipo de domínio, escolhi PostgreSQL justamente por isso.
+
+## Resultado
+
+Aplicação desktop cross-platform para Windows e Linux, com frontend em Next.js empacotado via Tauri e backend em FastAPI sobre MongoDB Atlas. Em desenvolvimento ativo, com CI configurada para o build multiplataforma.
+
+## Aprendizados
+
+Construir para uma pessoa específica muda o que você prioriza. Quase toda decisão de interface se resolveu perguntando "ela vai entender isso sem eu explicar?" — critério mais duro e mais útil que qualquer heurística de usabilidade que eu tivesse aplicado sozinho.
+
+A escolha do banco foi a lição mais cara. Ir pelo que eu já conhecia foi confortável no começo e virou dívida depois, num domínio onde o tipo de dado tem exigências próprias. Familiaridade é um critério legítimo — só não deveria ser o primeiro.

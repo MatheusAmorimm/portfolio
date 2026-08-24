@@ -1,0 +1,41 @@
+---
+slug: dns-manager
+category: infra
+featured: false
+draft: false
+year: 2026
+stack:
+  - Python
+  - CLI
+  - Windows
+  - { pt: Redes, en: Networking }
+  - PyInstaller
+cover: /covers/dns-manager.png
+links: {}
+title:
+  pt: DNS Manager
+  en: DNS Manager
+summary:
+  pt: Utilitário de linha de comando para alternar servidores DNS e configurações IPv4/IPv6 no Windows, nascido de uma demanda real de trabalho.
+  en: Command-line utility to switch DNS servers and IPv4/IPv6 settings on Windows, born out of a real need at work.
+---
+
+<!-- lang:pt -->
+
+## Contexto
+
+Precisava alternar rapidamente entre configurações de DNS para estabelecer conexão com um Pi-hole rodando em VM, usado como filtro de DNS da operação. Fazer isso pela interface do Windows a cada troca é lento e propenso a erro — especialmente porque envolve IPv4 e IPv6 ao mesmo tempo, em telas separadas.
+
+## Decisões técnicas
+
+*CLI, não interface gráfica.* A operação é troca de configuração, não exploração. Um comando resolve o que a interface do Windows resolve em seis cliques distribuídos por três janelas — e um comando pode ser roteirizado depois, o que uma GUI não pode.
+
+*Empacotamento com PyInstaller.* O objetivo era rodar em qualquer máquina Windows da operação sem depender da versão do sistema nem de ter Python instalado. O executável carrega o próprio runtime: quem usa não instala nada, só executa.
+
+## Resultado
+
+Ferramenta empacotada como executável, em uso real no trabalho. Estrutura modular, com build automatizado por script.
+
+## Aprendizados
+
+Automação nasce de irritação repetida. A ferramenta existe porque a mesma sequência de cliques aconteceu vezes suficientes para valer uma tarde de código — e esse é o critério que uso desde então para decidir o que automatizar.

@@ -1,0 +1,44 @@
+---
+slug: mpfinance
+category: web
+featured: true
+draft: false
+year: 2026
+stack:
+  - .NET 10
+  - Angular 21
+  - Clean Architecture
+  - MediatR
+  - Docker
+  - MySQL
+cover: /covers/mpfinance.png
+links: {}
+title:
+  pt: MPFinance
+  en: MPFinance
+summary:
+  pt: Sistema de controle financeiro construído deliberadamente fora da zona de conforto — .NET e Angular — com Clean Architecture e cinco design patterns documentados.
+  en: Financial management system built deliberately outside the comfort zone — .NET and Angular — with Clean Architecture and five documented design patterns.
+---
+
+<!-- lang:pt -->
+
+## Contexto
+
+Projeto da disciplina de Engenharia de Software, com uma restrição explícita: usar tecnologias que eu não dominava. Escolhi ASP.NET Core 10 e Angular 21, saindo do stack Node/React que já era confortável.
+
+## Decisões técnicas
+
+*Monólito, não microsserviços.* A decisão está documentada com o critério que a sustenta: um desenvolvedor, um banco, latência zero entre domínios, ACID nativo, stack trace linear. Microsserviços resolvem problema de organização de times, não de complexidade de código — e não havia times. A referência usada foi concreta: o Nubank adotou microsserviços por ter múltiplos times e domínios isolados regulatoriamente, não por elegância arquitetural.
+
+*Clean Architecture em quatro camadas, com regra de dependência estrita.* Domain não conhece Infrastructure; Application não conhece EF Core. Toda dependência aponta para dentro. O custo é mais arquivos; o retorno é conseguir trocar o ORM sem tocar em regra de negócio.
+
+*Eventos de domínio via MediatR.* Registrar usuário publica `UserRegisteredEvent`; o `WelcomeEmailHandler` reage. O Controller não sabe que existe serviço de e-mail. Padrão Observer in-process, sem o custo operacional de mensageria externa.
+
+## Resultado
+
+Aplicação funcional com autenticação JWT, hash BCrypt, verificação de e-mail por código OTP com expiração, transações fixas recorrentes e metas com depósito progressivo. Cinco patterns aplicados com propósito nomeado — Repository, Facade, Factory, Mediator, Strategy — e não por catálogo. Sobe inteira com `docker-compose up`, com health check garantindo que a API só inicia depois do banco. Commits padronizados com Husky e Commitlint.
+
+## Aprendizados
+
+A disciplina de manter a regra de dependência é maior que a de escrever a camada. É fácil deixar uma referência vazar do Application para o Infrastructure quando o prazo aperta, e o custo aparece semanas depois.

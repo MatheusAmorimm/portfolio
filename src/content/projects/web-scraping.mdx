@@ -1,0 +1,41 @@
+---
+slug: web-scraping
+category: dados-ia
+featured: true
+draft: false
+year: 2026
+stack:
+  - Python
+  - Web Scraping
+  - Threading
+  - { pt: Concorrência, en: Concurrency }
+  - Performance
+cover: /covers/web-scraping.png
+links: {}
+title:
+  pt: Web Scraping com Paralelismo
+  en: Web Scraping with Parallelism
+summary:
+  pt: Coletor de dados de livros em múltiplas páginas, otimizado de 5 minutos para 6 segundos com threading.
+  en: Book data collector across multiple pages, optimized from 5 minutes to 6 seconds with threading.
+---
+
+<!-- lang:pt -->
+
+## Contexto
+
+Os exercícios de scraping da disciplina eram sequenciais e pequenos. Pedi ao professor um desafio maior e ele propôs o problema real: coletar dados de muitos livros distribuídos em muitas páginas paginadas. A versão ingênua funcionava — e levava cerca de cinco minutos.
+
+## Decisões técnicas
+
+*Identificar que o gargalo era espera, não processamento.* Scraping passa quase todo o tempo bloqueado aguardando resposta HTTP, não usando CPU. Esse diagnóstico é o que define a solução: threading resolve carga limitada por entrada e saída, e é exatamente o caso aqui. Fosse gargalo de CPU, threads não ajudariam — o GIL do Python impediria o ganho.
+
+*Paralelizar as requisições, manter a coleta determinística.* Várias páginas buscadas ao mesmo tempo, com os resultados reunidos ao final de forma consistente, independentemente da ordem em que as respostas chegam.
+
+## Resultado
+
+De aproximadamente 5 minutos para cerca de 6 segundos — em torno de 50 vezes mais rápido, sem mudar a lógica de extração. O ganho veio inteiro de entender por que o programa estava lento, não de otimizar o código que já existia.
+
+## Aprendizados
+
+A primeira pergunta diante de código lento não é "como deixo isso mais rápido?", é "o que ele está fazendo enquanto está lento?". Cinco minutos de espera em rede e cinco minutos de cálculo pedem soluções opostas.
