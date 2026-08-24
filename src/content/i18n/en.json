@@ -42,6 +42,12 @@
     "hsprevent": "Fraud Prevention Assistant — HS Prevent",
     "ibrasa": "Apprentice — IBRASA"
   },
+  "notFound": {
+    "titulo": "This page doesn't exist.",
+    "texto": "The address may have changed, or the link that brought you here is wrong.",
+    "home": "Go to the home page",
+    "projetos": "View projects"
+  },
   "seo": {
     "title": "Matheus Amorim — Data Science and Engineering",
     "description": "Data Science and AI student at PUC-SP. Machine learning, web development and infrastructure projects. Looking for a data internship.",

@@ -108,6 +108,23 @@ body {
 }
 
 /*
+ * Transição de página. Só opacidade: qualquer deslocamento aqui move o
+ * conteúdo inteiro a cada navegação e atrapalha quem lê enquanto navega.
+ */
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page-fade {
+  animation: page-fade var(--duration-page) var(--ease);
+}
+
+/*
  * Fundo em degradê: brilho quente no alto à esquerda, brilho frio à
  * direita e escurecimento gradual até o rodapé. Todas as camadas vêm de
  * `color-mix` sobre os tokens — trocar a paleta troca o fundo junto.

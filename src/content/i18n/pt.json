@@ -42,6 +42,12 @@
     "hsprevent": "Assistente de Prevenção a Fraude — HS Prevent",
     "ibrasa": "Aprendiz — IBRASA"
   },
+  "notFound": {
+    "titulo": "Esta página não existe.",
+    "texto": "O endereço pode ter mudado, ou o link que trouxe você até aqui está errado.",
+    "home": "Ir para o início",
+    "projetos": "Ver projetos"
+  },
   "seo": {
     "title": "Matheus Amorim — Ciência de Dados e Engenharia",
     "description": "Estudante de Ciência de Dados e IA na PUC-SP. Projetos de machine learning, desenvolvimento web e infraestrutura. Buscando estágio em dados.",
