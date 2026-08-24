@@ -1,4 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
+import { Reveal } from "@/components/motion/Reveal";
 import { Timeline } from "@/components/sections/Timeline";
 import { StackStrip } from "@/components/sections/StackStrip";
 import { Button } from "@/components/ui/Button";
@@ -30,7 +31,9 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <Timeline />
+          <Reveal>
+            <Timeline />
+          </Reveal>
 
           <section aria-labelledby="cv-title" className="mt-(--space-block)">
             <h2

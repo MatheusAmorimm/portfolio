@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { mdxComponents } from "@/components/mdx/components";
+import { Reveal } from "@/components/motion/Reveal";
 import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
 import { getProject, listProjects } from "@/lib/projects/loader";
@@ -85,13 +86,13 @@ export default async function CasePage({
           ) : null}
         </header>
 
-        <div className="mt-(--space-block) max-w-(--width-prose)">
+        <Reveal className="mt-(--space-block) max-w-(--width-prose)">
           {Body ? (
             <Body components={mdxComponents} />
           ) : (
             <p className="text-muted">{t("translationPending")}</p>
           )}
-        </div>
+        </Reveal>
       </Container>
     </article>
   );

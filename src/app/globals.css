@@ -2,28 +2,46 @@
 
 @theme {
   /*
-   * Cor — ver spec § 4.1.
+   * Cor — paleta do autor (paletadecores.com), com #364461 como cor
+   * principal, logo o fundo do site.
+   *
+   * Cinco cores da paleta entram diretas: #364461 (fundo), #4d686f
+   * (contorno em destaque), #6d756a (detalhe decorativo), #bfa374
+   * (preenchimento de CTA) e #e3ba6a (accent).
+   *
+   * `foreground`, `muted`, `surface`, `border` e `on-accent` são
+   * DERIVADOS: a paleta é um conjunto de acento, não um sistema de
+   * interface — nenhuma das cinco cores passa WCAG AA como texto sobre
+   * o azul principal. Os derivados mantêm a temperatura da paleta e são
+   * verificados por src/lib/palette.test.ts.
+   *
    * O Tailwind v4 gera uma utility por token: --color-muted vira
    * `text-muted`, --color-surface vira `bg-surface`, e assim por diante.
    * Use sempre a utility gerada; nunca escreva o hex em componente.
    */
-  --color-background: #0b0e14;
-  --color-surface: #12161f;
-  --color-surface-hover: #171c27;
-  --color-border: #1e2430;
-  --color-border-strong: #2a3241;
-  --color-foreground: #e6e8ec;
-  --color-muted: #9aa3b2;
-  --color-accent: #fbbf24;
-  --color-accent-strong: #f59e0b;
-  --color-on-accent: #0b0e14;
+  --color-background: #364461;
+  --color-surface: #2e3a55;
+  --color-surface-hover: #3b4a6b;
+  --color-border: #445274;
+  --color-border-strong: #4d686f;
+  --color-foreground: #ece8e1;
+  --color-muted: #b9c0d0;
+  --color-accent: #e3ba6a;
+  --color-accent-strong: #bfa374;
+  --color-on-accent: #2a3550;
+  /* Decorativo apenas — nunca texto. Contraste baixo por natureza. */
+  --color-sage: #6d756a;
 
   /* Tipografia — ver spec § 4.2 */
   --font-display: var(--font-display-face);
   --font-mono: var(--font-mono-face);
 
-  --text-display: clamp(2.5rem, 6vw, 4rem);
-  --text-h1: clamp(2rem, 4vw, 2.75rem);
+  /*
+   * A escala foi reduzida a pedido do autor: o display anterior
+   * (até 4rem) dominava a tela. Direto e legível vale mais que grande.
+   */
+  --text-display: clamp(2.25rem, 4.5vw, 3.25rem);
+  --text-h1: clamp(1.875rem, 3.5vw, 2.5rem);
   --text-h2: 1.75rem;
   --text-h3: 1.25rem;
   --text-label: 0.75rem;
@@ -79,6 +97,19 @@ body {
 
 .hero-rise {
   animation: hero-rise var(--duration-hero) var(--ease) backwards;
+}
+
+/*
+ * Brilho difuso atrás do hero. CSS puro: não custa bundle e não toca o
+ * elemento de LCP. `color-mix` mantém a cor derivada do token — trocar
+ * o accent troca o brilho junto.
+ */
+.hero-glow {
+  background: radial-gradient(
+    64rem 32rem at 15% -20%,
+    color-mix(in oklab, var(--color-accent) 12%, transparent),
+    transparent 70%
+  );
 }
 
 /*
