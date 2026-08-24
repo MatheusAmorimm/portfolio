@@ -36,6 +36,14 @@
     "hsprevent": "Fraud Prevention Assistant — HS Prevent",
     "ibrasa": "Apprentice — IBRASA"
   },
+  "projects": {
+    "title": "Projects",
+    "empty": "No projects published in this tab yet.",
+    "tabs": {
+      "dados-ia": "Data & AI",
+      "web": "Systems & Infra"
+    }
+  },
   "project": {
     "stack": "Technologies",
     "repo": "View repository",

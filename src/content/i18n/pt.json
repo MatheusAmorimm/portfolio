@@ -36,6 +36,14 @@
     "hsprevent": "Assistente de Prevenção a Fraude — HS Prevent",
     "ibrasa": "Aprendiz — IBRASA"
   },
+  "projects": {
+    "title": "Projetos",
+    "empty": "Nenhum projeto publicado nesta aba ainda.",
+    "tabs": {
+      "dados-ia": "Dados & IA",
+      "web": "Sistemas & Infra"
+    }
+  },
   "project": {
     "stack": "Tecnologias",
     "repo": "Ver repositório",
