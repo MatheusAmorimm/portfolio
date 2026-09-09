@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { listProjects } from "@/lib/projects/loader";
 import { neutralStack } from "@/lib/projects/schema";
+import { scatter } from "@/lib/scatter";
 import { colorToken } from "@/lib/tokens";
 
 /**
@@ -20,6 +21,62 @@ import { colorToken } from "@/lib/tokens";
 export const dynamicParams = false;
 
 const SIZE = { width: 1200, height: 630 };
+
+/*
+ * A cena do site, semeada pelo slug: cada capa ganha uma dispersão
+ * própria, e as capas deixam de ser quatro retângulos iguais. Ocupa a
+ * metade direita, para não disputar com o texto. O Satori não desenha
+ * SVG com CSS, então os pontos são divs redondas e a reta é uma div
+ * girada — o mesmo `lib/scatter` do hero, outra forma de pintar.
+ */
+const CENA = { left: 0.44 * SIZE.width, width: 0.56 * SIZE.width };
+
+function Cena({ seed }: { seed: string }) {
+  const { points, line } = scatter(seed);
+  const dx = CENA.width;
+  const dy = (line.y2 - line.y1) * SIZE.height;
+  const comprimento = Math.hypot(dx, dy);
+  const angulo = (Math.atan2(dy, dx) * 180) / Math.PI;
+  // O Satori gira em torno do centro do elemento e ignora
+  // transform-origin, então a div é centrada no ponto médio da reta.
+  const meioX = CENA.left + dx / 2;
+  const meioY = ((line.y1 + line.y2) / 2) * SIZE.height;
+
+  return (
+    <div style={{ position: "absolute", inset: 0, display: "flex" }}>
+      {points.map((point, index) => {
+        const raio = point.r * CENA.width;
+        return (
+          <div
+            key={index}
+            style={{
+              position: "absolute",
+              left: CENA.left + point.x * CENA.width - raio,
+              top: point.y * SIZE.height - raio,
+              width: raio * 2,
+              height: raio * 2,
+              borderRadius: "50%",
+              backgroundColor: colorToken("accent-cool"),
+              opacity: 0.85,
+            }}
+          />
+        );
+      })}
+      <div
+        style={{
+          position: "absolute",
+          left: meioX - comprimento / 2,
+          top: meioY - 2,
+          width: comprimento,
+          height: 4,
+          borderRadius: 2,
+          backgroundColor: colorToken("accent"),
+          transform: `rotate(${angulo}deg)`,
+        }}
+      />
+    </div>
+  );
+}
 
 /**
  * Cada renderização instancia Satori e o conversor para PNG, que são
@@ -98,6 +155,7 @@ export async function GET(
         (
       <div
         style={{
+          position: "relative",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -107,10 +165,11 @@ export async function GET(
           padding: 80,
         }}
       >
+        <Cena seed={id} />
+
         <div
           style={{
             display: "flex",
-            justifyContent: "flex-end",
             fontSize: 26,
             letterSpacing: 3,
             color: colorToken("accent"),
@@ -130,7 +189,7 @@ export async function GET(
           />
           <div
             style={{
-              fontSize: 68,
+              fontSize: 64,
               fontWeight: 600,
               lineHeight: 1.15,
               letterSpacing: -1,

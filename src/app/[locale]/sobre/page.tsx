@@ -8,6 +8,7 @@ import { Timeline } from "@/components/sections/Timeline";
 import { StackStrip } from "@/components/sections/StackStrip";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CV } from "@/lib/cv";
 
 export async function generateMetadata({
@@ -60,14 +61,9 @@ export default function AboutPage() {
           </Reveal>
 
           <section aria-labelledby="cv-title" className="mt-(--space-block)">
-            <h2
-              id="cv-title"
-              className="font-mono text-label uppercase tracking-[0.06em] text-muted"
-            >
-              {t("cvTitle")}
-            </h2>
+            <SectionTitle id="cv-title">{t("cvTitle")}</SectionTitle>
             {cv ? (
-              <div className="mt-4">
+              <div className="mt-6">
                 <Button href={cv} variant="secondary" external>
                   {t("cvDownload")}
                 </Button>

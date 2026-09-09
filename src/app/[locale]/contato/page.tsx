@@ -6,6 +6,7 @@ import { CAMINHOS } from "@/lib/site";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { SOCIAL } from "@/lib/social";
 
 const LINKS = [
@@ -56,10 +57,8 @@ export default function ContactPage() {
         </Reveal>
 
         <Reveal className="mt-(--space-block)">
-          <h2 className="font-mono text-label uppercase tracking-[0.06em] text-muted">
-            {t("outrosCanais")}
-          </h2>
-          <ul className="mt-4 flex flex-wrap gap-5">
+          <SectionTitle id="outros-canais">{t("outrosCanais")}</SectionTitle>
+          <ul className="mt-6 flex flex-wrap gap-5">
             {LINKS.map(({ key, href }) => (
               <li key={key}>
                 <a

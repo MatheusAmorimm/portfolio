@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Link } from "@/i18n/navigation";
 
 export function AboutTeaser() {
@@ -13,12 +14,7 @@ export function AboutTeaser() {
     >
       <Container>
         <Reveal>
-          <h2
-            id="about-teaser-title"
-            className="font-mono text-label uppercase tracking-[0.06em] text-muted"
-          >
-            {t("title")}
-          </h2>
+          <SectionTitle id="about-teaser-title">{t("title")}</SectionTitle>
           <p className="mt-6 max-w-(--width-prose) text-muted">{t("p3")}</p>
           <Link
             href="/sobre"

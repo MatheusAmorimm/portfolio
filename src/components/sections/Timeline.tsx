@@ -1,4 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { formatMonth, TIMELINE } from "@/lib/timeline";
 
 export function Timeline() {
@@ -7,20 +8,15 @@ export function Timeline() {
 
   return (
     <section aria-labelledby="timeline-title" className="mt-(--space-block)">
-      <h2
-        id="timeline-title"
-        className="font-mono text-label uppercase tracking-[0.06em] text-muted"
-      >
-        {t("title")}
-      </h2>
+      <SectionTitle id="timeline-title">{t("title")}</SectionTitle>
 
-      <ol className="mt-6 border-l border-border">
+      <ol className="mt-8 border-l border-border">
         {TIMELINE.map((entry) => (
           <li key={entry.id} className="relative py-4 pl-6">
             <span
               aria-hidden="true"
               className={`absolute left-0 top-6 h-2 w-2 -translate-x-1/2 rounded-full ${
-                entry.kind === "education" ? "bg-accent" : "bg-border-strong"
+                entry.kind === "education" ? "bg-accent" : "bg-accent-cool"
               }`}
             />
             <p className="font-mono text-label uppercase tracking-[0.06em] text-muted">

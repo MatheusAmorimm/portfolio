@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Reveal } from "@/components/motion/Reveal";
 import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { STACK_GROUPS, stackItemKey } from "@/lib/stack";
 
 export function StackStrip() {
@@ -14,15 +15,10 @@ export function StackStrip() {
     >
       <Container>
         <Reveal>
-          <h2
-            id="stack-title"
-            className="font-mono text-label uppercase tracking-[0.06em] text-muted"
-          >
-            {t("title")}
-          </h2>
+          <SectionTitle id="stack-title">{t("title")}</SectionTitle>
         </Reveal>
 
-        <dl className="mt-8 grid gap-8 sm:grid-cols-2">
+        <dl className="mt-10 grid gap-8 sm:grid-cols-2">
           {STACK_GROUPS.map((group, index) => (
             // 70 ms entre grupos: dentro da faixa de 60–80 ms do CLAUDE.md.
             <Reveal key={group.id} delay={index * 0.07}>

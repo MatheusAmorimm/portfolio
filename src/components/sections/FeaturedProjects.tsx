@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Reveal } from "@/components/motion/Reveal";
 import { ProjectGrid } from "@/components/sections/ProjectGrid";
 import { Container } from "@/components/ui/Container";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Link } from "@/i18n/navigation";
 import type { Project } from "@/lib/projects/loader";
 
@@ -26,13 +27,8 @@ export function FeaturedProjects({ projects }: { projects: Project[] }) {
     >
       <Container>
         <Reveal>
-          <div className="flex flex-wrap items-baseline justify-between gap-4">
-            <h2
-              id="featured-title"
-              className="font-mono text-label uppercase tracking-[0.06em] text-muted"
-            >
-              {t("featured")}
-            </h2>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionTitle id="featured-title">{t("featured")}</SectionTitle>
             <Link
               href="/projetos"
               className="text-accent underline-offset-4 hover:underline"

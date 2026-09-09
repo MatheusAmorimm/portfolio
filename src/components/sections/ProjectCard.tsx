@@ -10,8 +10,9 @@ import { stackLabel } from "@/lib/projects/schema";
  * esticado: a área de clique fica grande sem aninhar o título dentro de
  * um link que engoliria a capa e as etiquetas na leitura por teclado.
  *
- * Elevação sem sombra — em fundo escuro ela não aparece. Troca de
- * superfície e de contorno, como define a spec § 4.1.
+ * Elevação: o card sobe 3px, troca superfície e contorno, e um brilho
+ * frio aparece por opacidade (`.card-glow`, globals.css). A capa cresce
+ * 3% dentro do próprio recorte. Tudo transform e opacity.
  */
 type Props = {
   project: Project;
@@ -39,22 +40,29 @@ export function ProjectCard({
   const { slug, title, summary, year, stack, cover } = project.frontmatter;
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface transition-colors duration-(--duration-hover) hover:border-border-strong hover:bg-surface-hover">
-      <Image
-        src={cover}
-        alt=""
-        width={1200}
-        height={630}
-        // Descreve o layout real, não uma aproximação: o grid vira duas
-        // colunas em 640px (breakpoint `sm`), e acima de 1120px o
-        // Container trava a largura, então o card para de crescer em
-        // 516px = (1120 - 64 de gutter - 24 de gap) / 2. Sem o teto, um
-        // monitor de 1920px baixaria o candidato de 1080px para exibir
-        // 516 — e esta é a imagem de LCP da página.
-        sizes="(min-width: 1120px) 516px, (min-width: 640px) 50vw, 100vw"
-        priority={priority}
-        className="aspect-1200/630 w-full object-cover"
-      />
+    <article className="card-glow group relative flex h-full flex-col rounded-card border border-border bg-surface hover:border-border-strong hover:bg-surface-hover">
+      {/*
+        O recorte da capa fica neste wrapper, não no card: `overflow:
+        hidden` no card cortaria o brilho do hover, que é desenhado para
+        fora da borda.
+      */}
+      <div className="overflow-hidden rounded-t-card">
+        <Image
+          src={cover}
+          alt=""
+          width={1200}
+          height={630}
+          // Descreve o layout real, não uma aproximação: o grid vira duas
+          // colunas em 640px (breakpoint `sm`), e acima de 1120px o
+          // Container trava a largura, então o card para de crescer em
+          // 516px = (1120 - 64 de gutter - 24 de gap) / 2. Sem o teto, um
+          // monitor de 1920px baixaria o candidato de 1080px para exibir
+          // 516 — e esta é a imagem de LCP da página.
+          sizes="(min-width: 1120px) 516px, (min-width: 640px) 50vw, 100vw"
+          priority={priority}
+          className="aspect-1200/630 w-full object-cover transition-transform duration-(--duration-hover) ease-(--ease) group-hover:scale-[1.03]"
+        />
+      </div>
 
       <div className="flex flex-1 flex-col p-5">
         <p className="font-mono text-label uppercase tracking-[0.06em] text-accent">
