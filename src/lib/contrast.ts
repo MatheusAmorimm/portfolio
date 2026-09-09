@@ -35,3 +35,16 @@ export function contrastRatio(a: string, b: string): number {
   );
   return (lighter + 0.05) / (darker + 0.05);
 }
+
+/**
+ * Cor resultante de pintar `over` com opacidade `alpha` sobre `under`,
+ * em sRGB — o que o navegador faz ao compor um degradê translúcido
+ * sobre o fundo. Serve para medir contraste no ponto mais claro dos
+ * brilhos do fundo, em vez de estimar à mão.
+ */
+export function composite(over: string, under: string, alpha: number): string {
+  const top = hexToRgb(over);
+  const base = hexToRgb(under);
+  const channels = base.map((b, i) => Math.round(b * (1 - alpha) + top[i] * alpha));
+  return `#${channels.map((c) => c.toString(16).padStart(2, "0")).join("")}`;
+}

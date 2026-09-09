@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { contrastRatio, hexToRgb, relativeLuminance } from "./contrast";
+import {
+  composite,
+  contrastRatio,
+  hexToRgb,
+  relativeLuminance,
+} from "./contrast";
 
 describe("hexToRgb", () => {
   it("converte hex de seis dígitos", () => {
@@ -37,5 +42,17 @@ describe("contrastRatio", () => {
 
   it("dá 1:1 para a mesma cor", () => {
     expect(contrastRatio("#12161F", "#12161F")).toBeCloseTo(1, 5);
+  });
+});
+
+describe("composite", () => {
+  it("com alpha 0 devolve o fundo, com alpha 1 devolve a camada", () => {
+    expect(composite("#ffffff", "#000000", 0)).toBe("#000000");
+    expect(composite("#ffffff", "#000000", 1)).toBe("#ffffff");
+  });
+
+  it("interpola canal a canal em sRGB", () => {
+    expect(composite("#ffffff", "#000000", 0.5)).toBe("#808080");
+    expect(composite("#e3ba6a", "#141b2d", 0.1)).toBe("#292b33");
   });
 });

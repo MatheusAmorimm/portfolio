@@ -2,33 +2,40 @@
 
 @theme {
   /*
-   * Cor — paleta do autor (paletadecores.com), com #364461 como cor
-   * principal, logo o fundo do site.
+   * Cor — paleta do autor (paletadecores.com): #364461, #4d686f,
+   * #6d756a, #bfa374 e #e3ba6a.
    *
-   * Cinco cores da paleta entram diretas: #364461 (fundo), #4d686f
-   * (contorno em destaque), #6d756a (detalhe decorativo), #bfa374
-   * (preenchimento de CTA) e #e3ba6a (accent).
+   * O navy #364461 já foi o fundo da página, e era a razão de o site
+   * parecer sem cor: fundo médio esmaga o contraste e deixa o dourado
+   * opaco. Hoje o fundo é um navy profundo DERIVADO dele, e o navy da
+   * paleta sobrevive nas superfícies e nos brilhos. Ver
+   * docs/superpowers/specs/2026-09-09-intro-e-cor-design.md § 3.
    *
-   * `foreground`, `muted`, `surface`, `border` e `on-accent` são
-   * DERIVADOS: a paleta é um conjunto de acento, não um sistema de
-   * interface — nenhuma das cinco cores passa WCAG AA como texto sobre
-   * o azul principal. Os derivados mantêm a temperatura da paleta e são
-   * verificados por src/lib/palette.test.ts.
+   * Há dois acentos, de temperaturas opostas, e a divisão é semântica:
+   * `accent` (dourado, da paleta) é a reta, o link e o CTA — a
+   * estrutura; `accent-cool` (derivado do teal #4d686f) são os pontos
+   * da cena e o brilho frio — os dados. Se tudo é destaque, nada é:
+   * fora da cena, o frio aparece só em foco e brilho.
+   *
+   * `foreground`, `muted`, `surface`, `border` e `on-accent` continuam
+   * derivados, e todo par é verificado por src/lib/palette.test.ts —
+   * inclusive sobre o ponto mais claro dos brilhos do fundo.
    *
    * O Tailwind v4 gera uma utility por token: --color-muted vira
    * `text-muted`, --color-surface vira `bg-surface`, e assim por diante.
    * Use sempre a utility gerada; nunca escreva o hex em componente.
    */
-  --color-background: #364461;
-  --color-surface: #2e3a55;
-  --color-surface-hover: #3b4a6b;
-  --color-border: #445274;
+  --color-background: #141b2d;
+  --color-surface: #1c2438;
+  --color-surface-hover: #243050;
+  --color-border: #2b3652;
   --color-border-strong: #4d686f;
   --color-foreground: #ece8e1;
-  --color-muted: #b9c0d0;
+  --color-muted: #a9b3c8;
   --color-accent: #e3ba6a;
   --color-accent-strong: #bfa374;
-  --color-on-accent: #2a3550;
+  --color-accent-cool: #8ecbd8;
+  --color-on-accent: #141b2d;
   /* Decorativo apenas — nunca texto. Contraste baixo por natureza. */
   --color-sage: #6d756a;
 
@@ -74,10 +81,34 @@
    */
   --duration-reveal: 600ms;
   --duration-hero: 600ms;
+  /* A cena: cada ponto nasce em 400ms; a reta se desenha em 600ms. */
+  --duration-dot: 400ms;
+  --duration-line: 600ms;
 
   /* Quanto o elemento sobe ao entrar. */
   --rise-hero: 12px;
   --rise-section: 44px;
+}
+
+/*
+ * Linha do tempo da intro. Fora do @theme porque não gera utility e
+ * porque é consumida também pelo componente de cliente, que precisa
+ * saber quando a cortina termina.
+ *
+ *   0 ms      pontos começam a nascer (18 ms entre cada um)
+ *   560 ms    a reta se desenha
+ *   900 ms    nome sobe
+ *   1050 ms   frase sobe
+ *   2300 ms   cortina começa a subir (600 ms)
+ *
+ * Cada animação respeita o teto de 600 ms do CLAUDE.md; a sequência não,
+ * e isso é registrado na spec § 7. Ela é interrompível: botão, Esc ou
+ * clique em qualquer ponto.
+ */
+:root {
+  --intro-lift: 2300ms;
+  --scene-line-at: 560ms;
+  --scene-dot-gap: 18ms;
 }
 
 body {
@@ -89,7 +120,7 @@ body {
 
 /* Foco visível em todo elemento interativo — requisito de acessibilidade. */
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent-cool);
   outline-offset: 2px;
 }
 
@@ -177,11 +208,10 @@ body {
  * direita e escurecimento gradual até o rodapé. Todas as camadas vêm de
  * `color-mix` sobre os tokens — trocar a paleta troca o fundo junto.
  *
- * As proporções NÃO são arbitrárias. O degradê clareia o fundo, e o
- * teste de contraste só mede a cor chapada; medido à mão, o texto
- * secundário sobre o ponto mais claro de cada camada dá 4,80:1 (dourado
- * a 6%) e 4,84:1 (teal a 20%), ambos acima do mínimo AA de 4,5. A 10% o
- * dourado cairia para 4,44 e reprovaria. Não aumente sem medir de novo.
+ * As proporções (10% dourado, 18% frio) são as mesmas que
+ * src/lib/palette.test.ts compõe sobre o fundo para medir o contraste
+ * no ponto mais claro. Mudou aqui, mude lá — senão o teste mede outra
+ * coisa.
  *
  * Vive num ::before fixo em vez de `background-attachment: fixed`, que
  * causa repintura a cada quadro de scroll em vários navegadores móveis.
@@ -193,21 +223,221 @@ body::before {
   z-index: -1;
   background:
     radial-gradient(
-      70rem 38rem at 12% -8%,
-      color-mix(in oklab, var(--color-accent) 6%, transparent),
+      70rem 38rem at 10% -10%,
+      color-mix(in oklab, var(--color-accent) 10%, transparent),
       transparent 62%
     ),
     radial-gradient(
-      64rem 44rem at 92% 4%,
-      color-mix(in oklab, var(--color-border-strong) 20%, transparent),
-      transparent 58%
+      60rem 46rem at 96% 8%,
+      color-mix(in oklab, var(--color-accent-cool) 18%, transparent),
+      transparent 60%
     ),
     linear-gradient(
       180deg,
-      color-mix(in oklab, var(--color-background) 92%, black) 0%,
-      var(--color-background) 38%,
-      color-mix(in oklab, var(--color-background) 86%, black) 100%
+      color-mix(in oklab, var(--color-background) 90%, black) 0%,
+      var(--color-background) 36%,
+      color-mix(in oklab, var(--color-background) 84%, black) 100%
     );
+}
+
+/*
+ * Grade técnica: linhas finas a cada 56px, mascaradas para se
+ * concentrarem atrás da cena e sumirem antes da borda da seção. Vive
+ * dentro do hero e da cortina, não no body — grade fixa atrás de
+ * conteúdo que rola parece defeito de renderização.
+ */
+.grade::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-border) 70%, transparent) 0 1px,
+      transparent 1px 56px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-border) 70%, transparent) 0 1px,
+      transparent 1px 56px
+    );
+  mask-image: radial-gradient(
+    70% 85% at 74% 48%,
+    black 0%,
+    transparent 72%
+  );
+}
+
+/*
+ * A cena: pontos que nascem um a um e a reta que se desenha por cima.
+ *
+ * A reta cresce por `scaleX` a partir da ponta esquerda — uma reta é
+ * reta, não precisa de `stroke-dashoffset`, e assim a cena inteira fica
+ * dentro da regra de animar só transform e opacity.
+ *
+ * `--scene-delay` é quem sincroniza: no hero, a cena espera a cortina
+ * começar a subir; se a intro foi pulada (ou já vista nesta sessão),
+ * `html[data-intro="skip"]` zera o atraso e a cena nasce com a página.
+ */
+@keyframes dot-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.scene-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dot-in var(--duration-dot) var(--ease) both;
+  /* O atraso individual (índice × intervalo) vem inline, do componente. */
+}
+
+.scene-line {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: line-in var(--duration-line) var(--ease) both;
+  animation-delay: calc(var(--scene-delay, 0ms) + var(--scene-line-at));
+}
+
+/* Brilho suave atrás da cena, para os pontos não flutuarem no vazio. */
+.scene-halo {
+  animation: dot-in var(--duration-line) var(--ease) both;
+  animation-delay: var(--scene-delay, 0ms);
+}
+
+.hero .scene {
+  --scene-delay: var(--intro-lift);
+}
+
+html[data-intro="skip"] .hero .scene {
+  --scene-delay: 0ms;
+}
+
+/*
+ * Cortina da intro. Cobre a tela, mostra a cena e sobe.
+ *
+ * A saída é animação de CSS com `forwards` terminando em
+ * `visibility: hidden`: sem JavaScript, a cortina sobe do mesmo jeito e
+ * deixa de bloquear o clique. Com JavaScript, o componente desmonta ao
+ * fim da animação — o nome dela é o gancho de `onAnimationEnd`.
+ *
+ * O hero embaixo NÃO espera a cortina: ele continua nascendo em 0 ms,
+ * como sempre, porque é ele que carrega o LCP. O Chrome não desconta
+ * oclusão ao medir; desconta `opacity: 0`.
+ */
+@keyframes intro-lift {
+  from {
+    transform: none;
+    visibility: visible;
+  }
+  to {
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+}
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: var(--color-background);
+  animation: intro-lift var(--duration-hero) var(--ease) var(--intro-lift)
+    forwards;
+}
+
+.intro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 70% at 72% 45%,
+    color-mix(in oklab, var(--color-accent-cool) 12%, transparent),
+    transparent 70%
+  );
+}
+
+/* Já vista nesta sessão, ou pulada: some antes do primeiro quadro. */
+html[data-intro="skip"] .intro {
+  display: none;
+}
+
+/*
+ * Navegação: sublinhado que cresce da esquerda no hover e fica fixo na
+ * rota atual. Só transform.
+ */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -0.25rem;
+  height: 1px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+.nav-link:hover::after,
+.nav-link[aria-current="page"]::after {
+  transform: none;
+}
+
+/*
+ * Hover de card: sobe 3px, contorno forte e um brilho frio que só
+ * existe pela opacidade de um pseudo-elemento — a sombra em si nunca
+ * anima. `::before` porque o `::after` do card é o link esticado.
+ */
+.card-glow {
+  transition:
+    transform var(--duration-hover) var(--ease),
+    border-color var(--duration-hover) var(--ease),
+    background-color var(--duration-hover) var(--ease);
+}
+
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-accent-cool) 45%, transparent),
+    0 24px 60px -24px color-mix(in oklab, var(--color-accent-cool) 55%, transparent);
+  transition: opacity var(--duration-hover) var(--ease);
+}
+
+.card-glow:hover {
+  transform: translateY(-3px);
+}
+
+.card-glow:hover::before,
+.card-glow:focus-within::before {
+  opacity: 1;
 }
 
 /*
@@ -242,5 +472,17 @@ body::before {
   [data-reveal] {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* A intro não existe para quem pediu menos movimento. */
+  .intro {
+    display: none;
+  }
+
+  /* A cena nasce no quadro final. */
+  .scene-dot,
+  .scene-line,
+  .scene-halo {
+    animation: none;
   }
 }

@@ -6,6 +6,9 @@
     "ctaProjects": "View projects",
     "ctaCv": "Download CV"
   },
+  "intro": {
+    "skip": "Skip intro"
+  },
   "stack": {
     "title": "Stack",
     "daily": "Day to day",
