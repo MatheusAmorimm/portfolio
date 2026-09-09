@@ -91,24 +91,28 @@
 }
 
 /*
- * Linha do tempo da intro. Fora do @theme porque não gera utility e
- * porque é consumida também pelo componente de cliente, que precisa
- * saber quando a cortina termina.
+ * Linha do tempo da cena e da intro. Fora do @theme porque não gera
+ * utility.
  *
- *   0 ms      pontos começam a nascer (18 ms entre cada um)
- *   560 ms    a reta se desenha
- *   900 ms    nome sobe
- *   1050 ms   frase sobe
- *   2300 ms   cortina começa a subir (600 ms)
+ * A cena é um gráfico que se constrói, nesta ordem:
  *
- * Cada animação respeita o teto de 600 ms do CLAUDE.md; a sequência não,
- * e isso é registrado na spec § 7. Ela é interrompível: botão, Esc ou
- * clique em qualquer ponto.
+ *   0 ms      eixos crescem a partir da origem (600 ms)
+ *   300 ms    grade e marcas surgem, 40 ms entre cada
+ *   700 ms    pontos caem, 18 ms entre cada (36 pontos → ~1750 ms)
+ *   1700 ms   a reta de tendência se desenha (600 ms)
+ *
+ * Na intro, nome e frase sobem junto com a reta, e a cortina começa a
+ * subir em 2900 ms (600 ms). Cada animação respeita o teto de 600 ms do
+ * CLAUDE.md; a sequência não, e isso é registrado na spec § 7. Ela é
+ * interrompível: botão, Esc ou clique em qualquer ponto.
  */
 :root {
-  --intro-lift: 2300ms;
-  --scene-line-at: 560ms;
+  --scene-axis-at: 0ms;
+  --scene-grid-at: 300ms;
+  --scene-dots-at: 700ms;
   --scene-dot-gap: 18ms;
+  --scene-line-at: 1700ms;
+  --intro-lift: 2900ms;
 }
 
 body {
@@ -271,16 +275,44 @@ body::before {
 }
 
 /*
- * A cena: pontos que nascem um a um e a reta que se desenha por cima.
- *
- * A reta cresce por `scaleX` a partir da ponta esquerda — uma reta é
- * reta, não precisa de `stroke-dashoffset`, e assim a cena inteira fica
- * dentro da regra de animar só transform e opacity.
+ * A cena: um gráfico que se constrói. Eixos crescem por `scale` a partir
+ * da origem; grade e marcas surgem por opacidade; pontos nascem por
+ * `scale` + opacidade; a reta cresce por `scaleX` a partir da ponta
+ * esquerda — uma reta é reta, não precisa de `stroke-dashoffset`. A cena
+ * inteira fica dentro da regra de animar só transform e opacity.
  *
  * `--scene-delay` é quem sincroniza: no hero, a cena espera a cortina
  * começar a subir; se a intro foi pulada (ou já vista nesta sessão),
  * `html[data-intro="skip"]` zera o atraso e a cena nasce com a página.
+ * Atrasos que dependem de índice (grade, marcas, pontos) vêm inline.
  */
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes dot-in {
   from {
     opacity: 0;
@@ -303,24 +335,59 @@ body::before {
   }
 }
 
+.scene-axis-x,
+.scene-axis-y,
+.scene-grid,
+.scene-tick,
+.scene-dot,
+.scene-line,
+.scene-halo {
+  animation-fill-mode: both;
+  animation-timing-function: var(--ease);
+}
+
+.scene-axis-x {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation-name: grow-x;
+  animation-duration: var(--duration-line);
+  animation-delay: calc(var(--scene-delay, 0ms) + var(--scene-axis-at));
+}
+
+.scene-axis-y {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation-name: grow-y;
+  animation-duration: var(--duration-line);
+  animation-delay: calc(var(--scene-delay, 0ms) + var(--scene-axis-at));
+}
+
+.scene-grid,
+.scene-tick {
+  animation-name: fade-in;
+  animation-duration: var(--duration-dot);
+}
+
 .scene-dot {
   transform-box: fill-box;
   transform-origin: center;
-  animation: dot-in var(--duration-dot) var(--ease) both;
-  /* O atraso individual (índice × intervalo) vem inline, do componente. */
+  animation-name: dot-in;
+  animation-duration: var(--duration-dot);
 }
 
 .scene-line {
   transform-box: fill-box;
   transform-origin: left center;
-  animation: line-in var(--duration-line) var(--ease) both;
+  animation-name: line-in;
+  animation-duration: var(--duration-line);
   animation-delay: calc(var(--scene-delay, 0ms) + var(--scene-line-at));
 }
 
-/* Brilho suave atrás da cena, para os pontos não flutuarem no vazio. */
+/* Brilho suave atrás dos pontos, para eles não flutuarem no vazio. */
 .scene-halo {
-  animation: dot-in var(--duration-line) var(--ease) both;
-  animation-delay: var(--scene-delay, 0ms);
+  animation-name: fade-in;
+  animation-duration: var(--duration-line);
+  animation-delay: calc(var(--scene-delay, 0ms) + var(--scene-dots-at));
 }
 
 .hero .scene {
@@ -480,6 +547,10 @@ html[data-intro="skip"] .intro {
   }
 
   /* A cena nasce no quadro final. */
+  .scene-axis-x,
+  .scene-axis-y,
+  .scene-grid,
+  .scene-tick,
   .scene-dot,
   .scene-line,
   .scene-halo {

@@ -6,7 +6,8 @@ import { Container } from "@/components/ui/Container";
 export const HERO_SEED = "matheus-amorim";
 
 /**
- * O que a cortina mostra: a cena e, embaixo dela, nome e frase-âncora.
+ * O que a cortina mostra: o gráfico se construindo e, ao lado, nome e
+ * frase-âncora, que sobem quando a reta de tendência se desenha.
  * Mesma grade e mesmo container do hero, para o nome da cortina estar
  * no lugar exato em que o nome do hero vai aparecer quando ela subir.
  *
@@ -22,13 +23,13 @@ export function IntroScene() {
         <div>
           <p
             className="hero-rise font-mono text-label uppercase tracking-[0.06em] text-accent-cool"
-            style={{ animationDelay: "900ms" }}
+            style={{ animationDelay: "calc(var(--scene-line-at) + 100ms)" }}
           >
             {t("name")}
           </p>
           <p
             className="hero-rise mt-4 max-w-[20ch] font-display text-display font-semibold leading-[1.1] tracking-tight text-balance"
-            style={{ animationDelay: "1050ms" }}
+            style={{ animationDelay: "calc(var(--scene-line-at) + 250ms)" }}
           >
             {t("headline")}
           </p>
