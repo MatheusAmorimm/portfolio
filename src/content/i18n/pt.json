@@ -59,7 +59,8 @@
   "contact": {
     "titulo": "Vamos conversar",
     "texto": "Estou buscando estágio em dados e IA para 2027. Se você tem uma vaga, uma pergunta sobre algum projeto daqui, ou só quer trocar ideia sobre alguma coisa que está construindo — escreva.",
-    "status": "Disponível para estágio · São Paulo · presencial, híbrido ou remoto",
+    "freelance": "Também aceito projetos como freelancer: dados, automação e desenvolvimento web. Se tiver um trabalho em mente, me chame.",
+    "status": "Disponível para estágio e freelance · São Paulo · presencial, híbrido ou remoto",
     "nome": "Nome",
     "email": "E-mail",
     "mensagem": "Mensagem",
@@ -67,6 +68,7 @@
     "enviando": "Enviando…",
     "sucesso": "Mensagem enviada. Respondo assim que puder.",
     "outrosCanais": "Outros canais",
+    "formulario": "Escrever por aqui",
     "erro": {
       "invalido": "Confira os campos: nome, e-mail válido e mensagem com pelo menos 20 caracteres.",
       "limite": "Muitas mensagens deste dispositivo. Tente de novo mais tarde ou escreva direto para o e-mail abaixo.",

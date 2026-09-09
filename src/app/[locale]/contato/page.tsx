@@ -7,6 +7,7 @@ import { ContactForm } from "@/components/sections/ContactForm";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container } from "@/components/ui/Container";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { SocialIcon } from "@/components/ui/SocialIcon";
 import { SOCIAL } from "@/lib/social";
 
 const LINKS = [
@@ -47,32 +48,42 @@ export default function ContactPage() {
         </h1>
 
         <p className="mt-6 max-w-(--width-prose) text-muted">{t("texto")}</p>
+        <p className="mt-4 max-w-(--width-prose) text-muted">
+          {t("freelance")}
+        </p>
 
         <p className="mt-4 font-mono text-label uppercase tracking-[0.06em] text-accent">
           {t("status")}
         </p>
 
-        <Reveal className="mt-(--space-block)">
-          <ContactForm />
-        </Reveal>
+        {/*
+          Redes antes do formulário: quem chega com pressa (recrutador
+          conferindo o perfil, cliente querendo ver código) encontra o
+          caminho direto sem rolar até o fim. O formulário fica para quem
+          quer escrever aqui mesmo.
+        */}
+        <ul className="mt-8 flex flex-wrap gap-3" aria-label={t("outrosCanais")}>
+          {LINKS.map(({ key, href }) => (
+            <li key={key}>
+              <a
+                href={href}
+                className="inline-flex items-center gap-2 rounded-badge border border-border px-4 py-2.5 text-foreground transition-colors duration-(--duration-hover) hover:border-border-strong hover:bg-surface"
+                {...(href.startsWith("http")
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+              >
+                <SocialIcon network={key} />
+                {social(key)}
+              </a>
+            </li>
+          ))}
+        </ul>
 
         <Reveal className="mt-(--space-block)">
-          <SectionTitle id="outros-canais">{t("outrosCanais")}</SectionTitle>
-          <ul className="mt-6 flex flex-wrap gap-5">
-            {LINKS.map(({ key, href }) => (
-              <li key={key}>
-                <a
-                  href={href}
-                  className="text-accent underline-offset-4 hover:underline"
-                  {...(href.startsWith("http")
-                    ? { target: "_blank", rel: "noopener noreferrer" }
-                    : {})}
-                >
-                  {social(key)}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <SectionTitle id="formulario">{t("formulario")}</SectionTitle>
+          <div className="mt-8">
+            <ContactForm />
+          </div>
         </Reveal>
       </Container>
     </section>

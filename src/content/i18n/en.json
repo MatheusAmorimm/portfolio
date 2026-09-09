@@ -59,7 +59,8 @@
   "contact": {
     "titulo": "Get in touch",
     "texto": "I'm looking for a data and AI internship starting in 2027. If you have a role, a question about any of the projects here, or just want to talk about something you're building — write.",
-    "status": "Available for internship · São Paulo · on-site, hybrid or remote",
+    "freelance": "I also take on freelance projects: data, automation and web development. If you have something in mind, get in touch.",
+    "status": "Available for internship and freelance · São Paulo · on-site, hybrid or remote",
     "nome": "Name",
     "email": "Email",
     "mensagem": "Message",
@@ -67,6 +68,7 @@
     "enviando": "Sending…",
     "sucesso": "Message sent. I'll reply as soon as I can.",
     "outrosCanais": "Other channels",
+    "formulario": "Write here",
     "erro": {
       "invalido": "Check the fields: name, a valid email and a message of at least 20 characters.",
       "limite": "Too many messages from this device. Try again later or write directly to the email below.",
