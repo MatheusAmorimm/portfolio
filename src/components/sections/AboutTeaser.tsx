@@ -15,7 +15,7 @@ export function AboutTeaser() {
       <Container>
         <Reveal>
           <SectionTitle id="about-teaser-title">{t("title")}</SectionTitle>
-          <p className="mt-6 max-w-(--width-prose) text-muted">{t("p3")}</p>
+          <p className="mt-6 max-w-(--width-prose) text-muted">{t("p1")}</p>
           <Link
             href="/sobre"
             className="mt-6 inline-block text-accent underline-offset-4 hover:underline"

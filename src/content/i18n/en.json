@@ -24,16 +24,15 @@
   },
   "about": {
     "title": "About",
-    "p1": "I started in fraud prevention. At HS Prevent I analysed documents using forensic document examination, looking for the inconsistency that gives a forgery away — and organised that volume into spreadsheets so the operation could see patterns where there had only been stacks of paper. That's where \"what is this data telling us?\" stopped being an abstract question.",
-    "p2": "That led me into technology. I completed a degree in Systems Analysis and Development at UNINOVE in 2025, and in February of that year started a bachelor's in Data Science and Artificial Intelligence at PUC-SP — the only programme in Brazil built around Humanistic AI, an approach that treats AI systems as part of a human context rather than an isolated box.",
-    "p3": "Today I work as an infrastructure and IT projects analyst at a health insurance brokerage. I build the dashboards and automations behind decisions in management and sales, administer databases and web servers, and plan the operation's technical projects. The job forces me to close the whole loop: collect, clean, model, ship, and keep it running.",
-    "p4": "That combination is what I'm after. Plenty of people can run a model. Fewer can provision the server it lives on, put a reverse proxy in front of it, and design an architecture where swapping the database doesn't mean rewriting the business rules. My projects are an attempt to keep both ends sharp at once.",
+    "p1": "I'm an Infrastructure and IT Projects Analyst, with a degree in Systems Analysis and Development from UNINOVE, currently in the second year of the Data Science and Artificial Intelligence programme at PUC-SP.",
+    "p2": "My academic and professional path is focused on continuous improvement in technology. I have experience with Linux servers, web server administration, information security practices and IT governance. I complement these skills with proficiency in Python, Excel, MySQL and Power BI.",
+    "p3": "My goal is to apply this combination of knowledge to build efficient solutions on challenging projects, adding value to the teams I work with and driving continuous professional growth.",
     "outsideLabel": "Outside the code",
     "outside": "basketball, video games, and reading about technology — plus a month in Montevideo on an intensive Spanish course at Universidad Católica del Uruguay.",
     "readMore": "Read the full background",
     "cvTitle": "CV",
     "cvDownload": "Download CV (PDF)",
-    "cvPending": "[→ preencher] The CV in this language hasn't been provided yet."
+    "cvPending": "An English version of the CV is on its way."
   },
   "timeline": {
     "title": "Background",
@@ -90,7 +89,7 @@
     "stack": "Technologies",
     "repo": "View repository",
     "demo": "View demo",
-    "translationPending": "[→ preencher] The English version of this case study hasn't been written yet — the summary above stands in for it."
+    "translationPending": "This case study hasn't been translated into English yet — the summary above covers the essentials."
   },
   "nav": {
     "home": "Home",

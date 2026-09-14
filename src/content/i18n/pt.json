@@ -24,16 +24,15 @@
   },
   "about": {
     "title": "Sobre",
-    "p1": "Comecei em prevenção a fraude. Na HS Prevent, analisava documentos com documentoscopia, procurando a inconsistência que denuncia uma falsificação — e organizava esse volume em planilhas para que a operação conseguisse enxergar padrão onde antes havia só pilha de papel. Foi ali que a pergunta \"o que esses dados estão dizendo?\" deixou de ser abstrata.",
-    "p2": "Isso me levou para a tecnologia. Cursei Análise e Desenvolvimento de Sistemas na UNINOVE, concluído em 2025, e em fevereiro do mesmo ano entrei no bacharelado em Ciência de Dados e Inteligência Artificial da PUC-SP — o único curso do país com formação em Humanistic AI, uma abordagem que trata sistemas de IA como parte de um contexto humano, não como caixa isolada.",
-    "p3": "Hoje sou analista de infraestrutura e projetos de TI numa corretora de planos de saúde. Construo dashboards e automações que sustentam decisão nas áreas de gestão e comercial, administro bancos de dados e servidores web, e planejo os projetos técnicos da operação. É um trabalho que me obriga a fechar o ciclo inteiro: coletar, tratar, modelar, colocar no ar e manter no ar.",
-    "p4": "Essa é a combinação que procuro exercitar. Muita gente sabe rodar um modelo. Menos gente sabe subir o servidor onde ele vai viver, configurar o proxy reverso na frente dele e desenhar a arquitetura que permite trocar o banco sem reescrever a regra de negócio. Meus projetos são a tentativa de manter as duas pontas afiadas ao mesmo tempo.",
+    "p1": "Sou um Analista de Infraestrutura e Projetos de TI, formado em Análise e Desenvolvimento de Sistemas pela UNINOVE e atualmente curso o segundo ano de Ciência de Dados e Inteligência Artificial na PUC-SP.",
+    "p2": "Minha jornada acadêmica e profissional é focada no aprimoramento contínuo em tecnologia. Possuo conhecimentos em servidores Linux, administração de servidores web, metodologias de segurança da informação e governança de TI. Complemento minhas habilidades com proficiência em Python, Excel, MySQL e Power BI.",
+    "p3": "Meu objetivo é aplicar essa combinação de conhecimentos para desenvolver soluções eficientes em projetos desafiadores, agregando valor às equipes com as quais colaboro e impulsionando o crescimento profissional contínuo.",
     "outsideLabel": "Fora do código",
-    "outside": "basquete, videogame e leitura sobre tecnologia — além de um mês em Montevidéu num curso intensivo de espanhol na Universidad Católica del Uruguay.",
+    "outside": "Jogo basquete, xadrez, RPG de Mesa, videogames, leio livros de fantasia medieval e cozinho.",
     "readMore": "Ler a trajetória completa",
     "cvTitle": "Currículo",
     "cvDownload": "Baixar currículo (PDF)",
-    "cvPending": "[→ preencher] O currículo neste idioma ainda não foi fornecido."
+    "cvPending": "A versão do currículo neste idioma ainda não está disponível."
   },
   "timeline": {
     "title": "Trajetória",
@@ -58,7 +57,7 @@
   },
   "contact": {
     "titulo": "Vamos conversar",
-    "texto": "Estou buscando estágio em dados e IA para 2027. Se você tem uma vaga, uma pergunta sobre algum projeto daqui, ou só quer trocar ideia sobre alguma coisa que está construindo — escreva.",
+    "texto": "Estou buscando estágio em dados e IA para 2027. Se você tem uma vaga, uma pergunta sobre algum projeto daqui, ou só quer trocar ideia sobre alguma coisa que está construindo, pode contar comigo.",
     "freelance": "Também aceito projetos como freelancer: dados, automação e desenvolvimento web. Se tiver um trabalho em mente, me chame.",
     "status": "Disponível para estágio e freelance · São Paulo · presencial, híbrido ou remoto",
     "nome": "Nome",
@@ -90,7 +89,7 @@
     "stack": "Tecnologias",
     "repo": "Ver repositório",
     "demo": "Ver demo",
-    "translationPending": "[→ preencher] A versão em inglês deste case ainda não foi escrita — acima está o resumo."
+    "translationPending": "Este case ainda não foi traduzido para este idioma — o resumo acima cobre o essencial."
   },
   "nav": {
     "home": "Início",
