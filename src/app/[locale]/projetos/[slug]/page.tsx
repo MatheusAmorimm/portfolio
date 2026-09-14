@@ -7,7 +7,9 @@ import { caminhoDoCase } from "@/lib/site";
 import { mdxComponents } from "@/components/mdx/components";
 import { Reveal } from "@/components/motion/Reveal";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { SocialIcon } from "@/components/ui/SocialIcon";
 import { getProject, listProjects } from "@/lib/projects/loader";
 import { stackLabel } from "@/lib/projects/schema";
 import { compileBody } from "@/lib/projects/render";
@@ -94,33 +96,25 @@ export default async function CasePage({
             })}
           </ul>
 
+          {/*
+            Mesmo padrão do "Baixar currículo": botão, não link. Demo, quando
+            existe, é o único preenchimento âmbar da tela (spec § 4.1) — ver o
+            projeto rodando é a ação principal; o repositório fica contornado.
+          */}
           {(links.repo ?? links.demo) ? (
-            <ul className="mt-6 flex flex-wrap gap-5">
-              {links.repo ? (
-                <li>
-                  <a
-                    href={links.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent underline-offset-4 hover:underline"
-                  >
-                    {t("repo")}
-                  </a>
-                </li>
-              ) : null}
+            <div className="mt-8 flex flex-wrap gap-3">
               {links.demo ? (
-                <li>
-                  <a
-                    href={links.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent underline-offset-4 hover:underline"
-                  >
-                    {t("demo")}
-                  </a>
-                </li>
+                <Button href={links.demo} external newTab>
+                  {t("demo")}
+                </Button>
               ) : null}
-            </ul>
+              {links.repo ? (
+                <Button href={links.repo} variant="secondary" external newTab>
+                  <SocialIcon network="github" className="size-4" />
+                  {t("repo")}
+                </Button>
+              ) : null}
+            </div>
           ) : null}
         </header>
 

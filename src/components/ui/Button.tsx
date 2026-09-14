@@ -22,10 +22,17 @@ type Props =
       variant?: Variant;
       /** Link para fora do site ou download. Usa <a>, não o Link do next-intl. */
       external: true;
+      /**
+       * Abre em nova aba, com `rel="noopener noreferrer"`. Para repositório
+       * e demo: o visitante vai olhar o código e voltar, e o portfólio
+       * continua aberto. Download de currículo não precisa — o PDF abre no
+       * próprio navegador.
+       */
+      newTab?: boolean;
     };
 
 const BASE =
-  "inline-flex items-center justify-center rounded-badge px-5 py-3 font-medium transition-colors duration-(--duration-hover) focus-visible:outline-2 focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded-badge px-5 py-3 font-medium transition-colors duration-(--duration-hover) focus-visible:outline-2 focus-visible:outline-offset-2";
 
 const VARIANTS: Record<Variant, string> = {
   // Um único preenchimento âmbar por tela — regra da spec § 4.1.
@@ -40,7 +47,11 @@ export function Button(props: Props) {
 
   if (props.external) {
     return (
-      <a href={props.href} className={className}>
+      <a
+        href={props.href}
+        className={className}
+        {...(props.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
         {children}
       </a>
     );
