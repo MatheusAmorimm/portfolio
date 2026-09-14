@@ -5,7 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { PersonJsonLd } from "@/components/seo/PersonJsonLd";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { routing } from "@/i18n/routing";
 import { CAMINHOS, permiteIndexacao, siteUrl } from "@/lib/site";
 import { DISPLAY_NAME } from "@/lib/social";
@@ -99,7 +99,7 @@ export default async function LocaleLayout({
         <noscript>
           <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
         </noscript>
-        <PersonJsonLd jobTitle={t("jobTitle")} />
+        <JsonLd jobTitle={t("jobTitle")} />
       </head>
       <body className="flex min-h-full flex-col">
         {/*
