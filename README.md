@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfólio — Matheus Amorim
 
-## Getting Started
+Site pessoal com os cases dos meus projetos em dados, IA, web e infraestrutura. Bilíngue (PT/EN), gerado estaticamente e publicado na Vercel.
 
-First, run the development server:
+## Stack
+
+- Next.js (App Router) e TypeScript strict
+- Tailwind CSS v4, com os tokens em `@theme` no `globals.css`
+- MDX para o conteúdo dos cases, validado com Zod na build
+- next-intl para i18n
+- Vitest para os testes
+- Resend para o formulário de contato
+
+## Decisões
+
+Cada uma tem um custo, e o custo está anotado no código onde a decisão vive.
+
+- **Conteúdo versionado, sem CMS.** Cada case é um `.mdx` em `src/content/projects/`. O frontmatter é validado com Zod na build: schema inválido quebra a build, de propósito.
+- **Os dois idiomas no mesmo arquivo.** O corpo é separado pelos marcadores `<!-- lang:pt -->` e `<!-- lang:en -->`. O loader compila só o idioma pedido, e o cliente não recebe runtime de MDX. Um arquivo por idioma era o risco de uma versão desatualizar a outra.
+- **Animação em CSS, sem biblioteca.** O hero contém o LCP; animá-lo por JavaScript faria o elemento esperar a hidratação. A entrada dos blocos ao rolar usa `IntersectionObserver` e uma transição de CSS. `prefers-reduced-motion` desliga toda animação, não só reduz.
+- **Contraste testado.** `src/lib/palette.test.ts` lê o `globals.css` real e falha se algum par texto/fundo cair abaixo de WCAG AA.
+- **Capas geradas na build.** Cada case ganha uma imagem tipográfica de 1200×630 em `/covers/<slug>.png`, servida por um route handler e usada no card e no Open Graph. Um arquivo estático em `public/covers/` tem precedência e substitui a capa gerada sem tocar no frontmatter.
+- **Formulário de contato com três barreiras.** Honeypot no cliente, validação com Zod e limite de requisições por IP no servidor. Sem a chave do provedor, o formulário avisa que está indisponível e aponta para o e-mail.
+- **CSS inline no HTML.** `experimental.inlineCss` tira uma ida à rede do caminho crítico. Quase todo acesso a um portfólio é o primeiro, então o cache de stylesheet que se perde quase nunca seria aproveitado.
+
+## Como rodar
 
 ```bash
-npm run dev
-# or
+corepack enable              # Yarn 4, declarado em packageManager
+yarn install
+cp .env.example .env.local   # opcional: sem ele, só o formulário fica indisponível
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Verificação, na mesma ordem do CI:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn lint
+yarn typecheck
+yarn test
+yarn build     # valida o frontmatter de todos os cases
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Estrutura
 
-## Learn More
+```
+src/
+├── app/[locale]/        # rotas por idioma: home, projetos/[slug], sobre, contato
+├── app/api/contato/     # route handler do formulário
+├── app/covers/[slug]/   # capa PNG de cada case, gerada na build
+├── components/          # ui, layout, sections, motion, mdx, seo
+├── content/projects/    # um .mdx por case, PT e EN no mesmo arquivo
+├── content/i18n/        # texto de interface, pt.json e en.json
+└── lib/                 # loader, schema, contraste, cena do gráfico, contato
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Conteúdo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Um case novo parte de `src/content/projects/_template.mdx` e segue quatro seções: Contexto, Decisões técnicas, Resultado, Aprendizados. Categoria é dado (`dados-ia`, `web`, `infra`); a aba que a exibe é apresentação, mapeada em `src/lib/tabs.ts`.
