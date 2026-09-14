@@ -530,9 +530,9 @@ html[data-intro="skip"] .intro {
   }
 
   /*
-   * Desliga também o que é animado por JavaScript. O <Reveal> renderiza
-   * `opacity: 0` inline no servidor — determinístico de propósito, para
-   * não divergir na hidratação —, então quem desativa o movimento
+   * Desliga também o que depende de JavaScript. O <Reveal> nasce com
+   * `opacity: 0` pela regra de `[data-reveal]` acima e só muda quando o
+   * observador liga `data-visivel`, então quem desativa o movimento
    * precisa desta regra para ver o conteúdo já no primeiro quadro. Mesmo
    * gancho do fallback sem JS declarado no layout.
    */

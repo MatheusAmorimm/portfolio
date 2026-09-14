@@ -91,10 +91,10 @@ export default async function LocaleLayout({
     >
       <head>
         {/*
-          Sem JavaScript, o `initial` que o motion renderiza no servidor
-          (opacity: 0) nunca seria animado até 1 e a seção ficaria
-          invisível. `!important` numa folha vence estilo inline — este é
-          o critério de aceite "funciona com JS de animação desativado".
+          Sem JavaScript, `[data-reveal]` nasce com opacity: 0 pelo
+          globals.css e o observador que o revela nunca roda — a seção
+          ficaria invisível. Este é o critério de aceite "funciona com
+          JavaScript desativado".
         */}
         <noscript>
           <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>

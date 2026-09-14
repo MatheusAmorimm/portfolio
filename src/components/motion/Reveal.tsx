@@ -21,8 +21,9 @@ type Props = {
  * qualquer navegador (ao contrário de `animation-timeline: view()`, que
  * ainda não é universal).
  *
- * A biblioteca continua onde CSS é de fato frágil: animar a SAÍDA antes
- * da desmontagem, na troca de aba — e agora ela só carrega em /projetos.
+ * Com isso a biblioteca saiu do projeto: a troca de aba, seu último
+ * uso, passou a remontar o painel e reaproveitar a entrada de CSS dos
+ * cards — ver `Tabs.tsx`.
  *
  * O observador desconecta no primeiro disparo: a animação acontece uma
  * vez, como manda o CLAUDE.md. Estado inicial, fallback sem JavaScript e
