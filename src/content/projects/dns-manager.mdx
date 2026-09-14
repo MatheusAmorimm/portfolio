@@ -8,8 +8,9 @@ stack:
   - Python
   - CLI
   - Windows
-  - { pt: Redes, en: Networking }
+  - PowerShell
   - PyInstaller
+  - { pt: Redes, en: Networking }
 cover: /covers/dns-manager.png
 links:
   repo: https://github.com/MatheusAmorimm/DNS_Manager
@@ -17,8 +18,8 @@ title:
   pt: DNS Manager
   en: DNS Manager
 summary:
-  pt: Utilitário de linha de comando para alternar servidores DNS e configurações IPv4/IPv6 no Windows, nascido de uma demanda real de trabalho.
-  en: Command-line utility to switch DNS servers and IPv4/IPv6 settings on Windows, born out of a real need at work.
+  pt: Utilitário de linha de comando para Windows que aplica ou restaura o DNS nas interfaces conectadas e liga ou desliga IPv4 e IPv6 em todos os adaptadores, nascido de uma demanda real de trabalho.
+  en: Command-line utility for Windows that applies or restores DNS on the connected interfaces and turns IPv4 and IPv6 on or off across every adapter, born out of a real need at work.
 ---
 
 <!-- lang:pt -->
@@ -27,15 +28,27 @@ summary:
 
 Precisava alternar rapidamente entre configurações de DNS para estabelecer conexão com um Pi-hole rodando em VM, usado como filtro de DNS da operação. Fazer isso pela interface do Windows a cada troca é lento e propenso a erro — especialmente porque envolve IPv4 e IPv6 ao mesmo tempo, em telas separadas.
 
+O DNS Manager é a resposta: um menu interativo em Python que detecta as interfaces de rede conectadas, aplica a operação escolhida de uma vez e registra cada passo em um arquivo de log. Foi pensado para técnicos e equipes de suporte que precisam trocar o DNS de várias máquinas com rapidez, sem depender das telas de configuração do Windows.
+
 ## Decisões técnicas
 
-*CLI, não interface gráfica.* A operação é troca de configuração, não exploração. Um comando resolve o que a interface do Windows resolve em seis cliques distribuídos por três janelas — e um comando pode ser roteirizado depois, o que uma GUI não pode.
+*CLI, não interface gráfica.* A operação é troca de configuração, não exploração. Um comando resolve o que a interface do Windows resolve em seis cliques distribuídos por três janelas — e um comando pode ser roteirizado depois, o que uma GUI não pode. O menu tem oito opções: aplicar um DNS personalizado, restaurar o DNS automático (DHCP), ativar ou desativar o IPv4 e o IPv6, ver o log e sair.
 
-*Empacotamento com PyInstaller.* O objetivo era rodar em qualquer máquina Windows da operação sem depender da versão do sistema nem de ter Python instalado. O executável carrega o próprio runtime: quem usa não instala nada, só executa.
+*Encapsular o `netsh` e o PowerShell, não reinventá-los.* O programa executa `netsh interface show interface` e considera conectadas as linhas que contêm "Conectado" ou "Connected", então funciona em Windows em português e em inglês. O DNS é aplicado com `netsh interface ip set dns` em cada interface conectada, e a restauração usa `source=dhcp`. IPv4 e IPv6 são ligados e desligados pelos cmdlets `Enable-NetAdapterBinding` e `Disable-NetAdapterBinding`, em todos os adaptadores — por isso o requisito de Windows 8 ou superior, onde esses cmdlets existem.
+
+*Validar e confirmar antes de mudar o que é deliberado.* Aplicar um DNS personalizado e restaurar o DHCP pedem confirmação, e o formato do IP é validado antes de qualquer alteração. Ligar e desligar IPv4 e IPv6 executa na hora.
+
+*Administrador obrigatório, checado na entrada.* A verificação usa `IsUserAnAdmin` da `shell32`; sem privilégio, o programa encerra.
+
+*Empacotamento com PyInstaller.* O objetivo era rodar em qualquer máquina Windows da operação sem depender da versão do sistema nem de ter Python instalado. O `build.bat` limpa `build/` e `dist/`, roda o PyInstaller com o `DNSManager.spec` e gera um `DNSManager.exe` de arquivo único, com console, ícone próprio e o `.env` embutido. Para distribuir, copia-se só o executável.
+
+*Testes sem tocar na máquina.* A suíte usa o `unittest` da biblioteca padrão e simula os comandos de rede, então roda sem privilégio de administrador e não altera a configuração de quem testa.
 
 ## Resultado
 
-Ferramenta empacotada como executável, em uso real no trabalho. Estrutura modular, com build automatizado por script.
+Ferramenta empacotada como executável, em uso real no trabalho. Estrutura modular — menu, privilégios, interfaces, DNS, IPv4, IPv6 e log em módulos separados — com build automatizado por script e toda mensagem do console gravada, com data e hora, no arquivo de log.
+
+As limitações estão documentadas no README, não escondidas: não há seleção individual de interface, só um DNS primário IPv4 é configurado, restaurar significa forçar DHCP e não voltar à configuração anterior, e desabilitar o IPv4 derruba a conectividade sem pedir confirmação.
 
 ## Aprendizados
 
@@ -47,15 +60,27 @@ Automação nasce de irritação repetida. A ferramenta existe porque a mesma se
 
 I needed to switch quickly between DNS configurations to connect to a Pi-hole running in a VM, used as the operation's DNS filter. Doing that through the Windows interface on every switch is slow and error-prone — especially because it involves IPv4 and IPv6 at the same time, on separate screens.
 
+DNS Manager is the answer: an interactive menu in Python that detects the connected network interfaces, applies the chosen operation in one go and records every step in a log file. It was designed for technicians and support teams that need to change the DNS of several machines quickly, without depending on the Windows settings screens.
+
 ## Technical decisions
 
-*CLI, not a graphical interface.* The operation is a configuration switch, not exploration. One command does what the Windows interface does in six clicks spread across three windows — and a command can be scripted later, which a GUI cannot.
+*CLI, not a graphical interface.* The operation is a configuration switch, not exploration. One command does what the Windows interface does in six clicks spread across three windows — and a command can be scripted later, which a GUI cannot. The menu has eight options: apply a custom DNS, restore automatic DNS (DHCP), enable or disable IPv4 and IPv6, view the log and exit.
 
-*Packaging with PyInstaller.* The goal was to run on any Windows machine in the operation without depending on the system version or on having Python installed. The executable carries its own runtime: whoever uses it installs nothing, just runs it.
+*Wrap `netsh` and PowerShell, do not reinvent them.* The program runs `netsh interface show interface` and treats as connected the lines containing "Conectado" or "Connected", so it works on Windows in Portuguese and in English. DNS is applied with `netsh interface ip set dns` on each connected interface, and restoring uses `source=dhcp`. IPv4 and IPv6 are turned on and off through the `Enable-NetAdapterBinding` and `Disable-NetAdapterBinding` cmdlets, across every adapter — hence the requirement of Windows 8 or later, where those cmdlets exist.
+
+*Validate and confirm before changing what is deliberate.* Applying a custom DNS and restoring DHCP ask for confirmation, and the IP format is validated before any change. Enabling and disabling IPv4 and IPv6 run immediately.
+
+*Administrator required, checked on entry.* The check uses `IsUserAnAdmin` from `shell32`; without the privilege, the program exits.
+
+*Packaging with PyInstaller.* The goal was to run on any Windows machine in the operation without depending on the system version or on having Python installed. `build.bat` cleans `build/` and `dist/`, runs PyInstaller with `DNSManager.spec` and produces a single-file `DNSManager.exe`, with a console, its own icon and the `.env` embedded. To distribute, only the executable is copied.
+
+*Tests that never touch the machine.* The suite uses `unittest` from the standard library and mocks the network commands, so it runs without administrator privileges and does not change the tester's configuration.
 
 ## Result
 
-Tool packaged as an executable, in real use at work. Modular structure, with a script-automated build.
+Tool packaged as an executable, in real use at work. Modular structure — menu, privileges, interfaces, DNS, IPv4, IPv6 and log in separate modules — with a script-automated build and every console message written, with date and time, to the log file.
+
+The limitations are documented in the README, not hidden: there is no per-interface selection, only one primary IPv4 DNS is configured, restoring means forcing DHCP rather than returning to the previous configuration, and disabling IPv4 drops connectivity without asking for confirmation.
 
 ## Learnings
 
