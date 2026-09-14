@@ -1,4 +1,5 @@
 import { SOCIAL } from "@/lib/social";
+import { descreverDownload, type DownloadInput } from "@/lib/cv";
 import type { ContactInput } from "./schema";
 
 /**
@@ -22,9 +23,14 @@ export type SendResult =
   | { ok: true }
   | { ok: false; motivo: "nao-configurado" | "falha-provedor" };
 
-export async function enviarMensagem(
-  entrada: ContactInput,
-): Promise<SendResult> {
+type Email = {
+  assunto: string;
+  texto: string;
+  /** Responder no cliente de e-mail vai para este endereço. */
+  responderPara?: string;
+};
+
+async function enviarEmail(email: Email): Promise<SendResult> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return { ok: false, motivo: "nao-configurado" };
@@ -42,15 +48,9 @@ export async function enviarMensagem(
     body: JSON.stringify({
       from: `Portfólio <${remetente}>`,
       to: [destino],
-      // Responder no cliente de e-mail vai direto para quem escreveu.
-      reply_to: entrada.email,
-      subject: `Contato pelo site — ${entrada.name}`,
-      text: [
-        `Nome:  ${entrada.name}`,
-        `E-mail: ${entrada.email}`,
-        "",
-        entrada.message,
-      ].join("\n"),
+      ...(email.responderPara ? { reply_to: email.responderPara } : {}),
+      subject: email.assunto,
+      text: email.texto,
     }),
   });
 
@@ -60,10 +60,38 @@ export async function enviarMensagem(
     if (process.env.NODE_ENV !== "production") {
       console.error("Resend respondeu", resposta.status, await resposta.text());
     } else {
-      console.error("Falha ao enviar contato: status", resposta.status);
+      console.error("Falha ao enviar e-mail: status", resposta.status);
     }
     return { ok: false, motivo: "falha-provedor" };
   }
 
   return { ok: true };
+}
+
+/** Mensagem do formulário de contato, com reply-to em quem escreveu. */
+export function enviarMensagem(entrada: ContactInput): Promise<SendResult> {
+  return enviarEmail({
+    assunto: `Contato pelo site — ${entrada.name}`,
+    responderPara: entrada.email,
+    texto: [
+      `Nome:  ${entrada.name}`,
+      `E-mail: ${entrada.email}`,
+      "",
+      entrada.message,
+    ].join("\n"),
+  });
+}
+
+/**
+ * Aviso ao autor de que alguém baixou o currículo. Só o que o site sabe
+ * sem identificar ninguém: idioma, botão e horário. Nada de IP nem de
+ * user agent — é um aviso, não rastreamento.
+ */
+export function notificarDownloadCurriculo(
+  entrada: DownloadInput,
+): Promise<SendResult> {
+  return enviarEmail({
+    assunto: "Alguém baixou o seu currículo pelo site",
+    texto: descreverDownload(entrada, new Date()),
+  });
 }

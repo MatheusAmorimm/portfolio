@@ -1,5 +1,5 @@
 /**
- * Limite de envio por IP, em memória.
+ * Limite de requisições por IP, em memória.
  *
  * LIMITAÇÃO CONHECIDA, e deliberada: serverless não compartilha memória
  * entre instâncias, então isto contém rajada de uma mesma instância, não
@@ -7,12 +7,11 @@
  * — a alternativa (Redis/KV) custa um serviço externo e uma chave a mais
  * para um site que recebe mensagem de recrutador. Se o volume mudar,
  * troque o Map por um store compartilhado; a interface abaixo não muda.
+ *
+ * Cada rota cria o próprio limitador: o contato e o aviso de download do
+ * currículo têm contadores separados, senão baixar o currículo gastaria
+ * as tentativas do formulário.
  */
-const JANELA_MS = 60 * 60 * 1000;
-const MAXIMO = 3;
-
-const registros = new Map<string, number[]>();
-
 export type RateLimitResult = {
   permitido: boolean;
   restantes: number;
@@ -20,35 +19,59 @@ export type RateLimitResult = {
   esperaSegundos: number;
 };
 
-export function checarLimite(
-  ip: string,
-  agora: number = Date.now(),
-): RateLimitResult {
-  const recentes = (registros.get(ip) ?? []).filter(
-    (momento) => agora - momento < JANELA_MS,
-  );
+export type Limitador = {
+  checar: (ip: string, agora?: number) => RateLimitResult;
+  /** Só para teste: zera o estado entre casos. */
+  limpar: () => void;
+};
 
-  if (recentes.length >= MAXIMO) {
-    const maisAntigo = Math.min(...recentes);
-    registros.set(ip, recentes);
-    return {
-      permitido: false,
-      restantes: 0,
-      esperaSegundos: Math.ceil((JANELA_MS - (agora - maisAntigo)) / 1000),
-    };
-  }
+export const UMA_HORA_MS = 60 * 60 * 1000;
 
-  recentes.push(agora);
-  registros.set(ip, recentes);
+export function criarLimitador({
+  maximo,
+  janelaMs = UMA_HORA_MS,
+}: {
+  maximo: number;
+  janelaMs?: number;
+}): Limitador {
+  const registros = new Map<string, number[]>();
 
   return {
-    permitido: true,
-    restantes: MAXIMO - recentes.length,
-    esperaSegundos: 0,
+    checar(ip, agora = Date.now()) {
+      const recentes = (registros.get(ip) ?? []).filter(
+        (momento) => agora - momento < janelaMs,
+      );
+
+      if (recentes.length >= maximo) {
+        const maisAntigo = Math.min(...recentes);
+        registros.set(ip, recentes);
+        return {
+          permitido: false,
+          restantes: 0,
+          esperaSegundos: Math.ceil((janelaMs - (agora - maisAntigo)) / 1000),
+        };
+      }
+
+      recentes.push(agora);
+      registros.set(ip, recentes);
+
+      return {
+        permitido: true,
+        restantes: maximo - recentes.length,
+        esperaSegundos: 0,
+      };
+    },
+    limpar() {
+      registros.clear();
+    },
   };
 }
 
-/** Só para teste: zera o estado entre casos. */
-export function limparLimites(): void {
-  registros.clear();
+/**
+ * Atrás da Vercel, o IP do visitante é o primeiro de x-forwarded-for;
+ * request.ip não existe fora do runtime edge.
+ */
+export function ipDe(request: Request): string {
+  const encaminhado = request.headers.get("x-forwarded-for") ?? "";
+  return encaminhado.split(",")[0]?.trim() || "desconhecido";
 }

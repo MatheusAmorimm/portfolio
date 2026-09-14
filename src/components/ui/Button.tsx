@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, MouseEventHandler, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 
 type Variant = "primary" | "secondary";
@@ -23,12 +23,14 @@ type Props =
       /** Link para fora do site ou download. Usa <a>, não o Link do next-intl. */
       external: true;
       /**
-       * Abre em nova aba, com `rel="noopener noreferrer"`. Para repositório
-       * e demo: o visitante vai olhar o código e voltar, e o portfólio
-       * continua aberto. Download de currículo não precisa — o PDF abre no
-       * próprio navegador.
+       * Abre em nova aba, com `rel="noopener noreferrer"`. Todo link para
+       * fora e todo download usam isto, por decisão do autor: o visitante
+       * vai olhar o código ou o PDF e volta, e o portfólio continua aberto.
+       * Rotas internas nunca — a navegação no site é na mesma aba.
        */
       newTab?: boolean;
+      /** Só o link externo tem handler: o interno é navegação, e pronto. */
+      onClick?: MouseEventHandler<HTMLAnchorElement>;
     };
 
 const BASE =
@@ -50,6 +52,7 @@ export function Button(props: Props) {
       <a
         href={props.href}
         className={className}
+        onClick={props.onClick}
         {...(props.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
         {children}

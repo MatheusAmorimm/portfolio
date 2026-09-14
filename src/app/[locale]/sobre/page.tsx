@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import { routing } from "@/i18n/routing";
 import { CAMINHOS } from "@/lib/site";
 import { Reveal } from "@/components/motion/Reveal";
+import { CvButton } from "@/components/sections/CvButton";
 import { Timeline } from "@/components/sections/Timeline";
 import { StackStrip } from "@/components/sections/StackStrip";
-import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CV } from "@/lib/cv";
@@ -33,7 +33,9 @@ export async function generateMetadata({
 
 export default function AboutPage() {
   const t = useTranslations("about");
-  const cv = CV[useLocale()];
+  const tCv = useTranslations("cv");
+  const locale = useLocale();
+  const cv = CV[locale];
 
   return (
     <>
@@ -63,9 +65,13 @@ export default function AboutPage() {
             <SectionTitle id="cv-title">{t("cvTitle")}</SectionTitle>
             {cv ? (
               <div className="mt-6">
-                <Button href={cv} variant="secondary" external>
-                  {t("cvDownload")}
-                </Button>
+                <CvButton
+                  href={cv}
+                  label={t("cvDownload")}
+                  thanks={tCv("thanks")}
+                  locale={locale}
+                  origem="sobre"
+                />
               </div>
             ) : (
               <p className="mt-3 text-muted">{t("cvPending")}</p>

@@ -1,6 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { HERO_SEED } from "@/components/sections/IntroScene";
 import { ScatterStage } from "@/components/sections/ScatterStage";
+import { CvButton } from "@/components/sections/CvButton";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { CV } from "@/lib/cv";
@@ -16,7 +17,9 @@ import { CV } from "@/lib/cv";
  */
 export function Hero() {
   const t = useTranslations("hero");
-  const cv = CV[useLocale()];
+  const tCv = useTranslations("cv");
+  const locale = useLocale();
+  const cv = CV[locale];
 
   return (
     <section className="hero grade relative overflow-hidden">
@@ -61,9 +64,13 @@ export function Hero() {
               de download que daria 404.
             */}
             {cv ? (
-              <Button href={cv} variant="secondary" external>
-                {t("ctaCv")}
-              </Button>
+              <CvButton
+                href={cv}
+                label={t("ctaCv")}
+                thanks={tCv("thanks")}
+                locale={locale}
+                origem="hero"
+              />
             ) : (
               <Button href="/sobre" variant="secondary">
                 {t("ctaCv")}

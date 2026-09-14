@@ -34,6 +34,9 @@
     "cvDownload": "Download CV (PDF)",
     "cvPending": "An English version of the CV is on its way."
   },
+  "cv": {
+    "thanks": "Thanks for downloading my CV. It opened in a new tab."
+  },
   "timeline": {
     "title": "Background",
     "ongoing": "present",

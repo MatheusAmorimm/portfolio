@@ -34,6 +34,9 @@
     "cvDownload": "Baixar currículo (PDF)",
     "cvPending": "A versão do currículo neste idioma ainda não está disponível."
   },
+  "cv": {
+    "thanks": "Obrigado por baixar meu currículo. Ele abriu numa nova aba."
+  },
   "timeline": {
     "title": "Trajetória",
     "ongoing": "atual",

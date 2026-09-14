@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { checarLimite } from "@/lib/contact/rate-limit";
+import { criarLimitador, ipDe } from "@/lib/contact/rate-limit";
 import { contactSchema } from "@/lib/contact/schema";
 import { enviarMensagem } from "@/lib/contact/send";
 
@@ -20,6 +20,8 @@ export type ContactErrorCode =
   | "indisponivel"
   | "falha";
 
+const limite = criarLimitador({ maximo: 3 });
+
 function erro(codigo: ContactErrorCode, status: number) {
   return NextResponse.json({ ok: false, codigo }, { status });
 }
@@ -39,22 +41,20 @@ export async function POST(request: Request) {
     return erro("invalido", 400);
   }
 
-  // Atrás da Vercel, o IP do visitante é o primeiro de x-forwarded-for;
-  // request.ip não existe fora do runtime edge.
-  const encaminhado = request.headers.get("x-forwarded-for") ?? "";
-  const ip = encaminhado.split(",")[0]?.trim() || "desconhecido";
-
-  const limite = checarLimite(ip);
-  if (!limite.permitido) {
+  const resultado = limite.checar(ipDe(request));
+  if (!resultado.permitido) {
     return NextResponse.json(
-      { ok: false, codigo: "limite", esperaSegundos: limite.esperaSegundos },
-      { status: 429, headers: { "Retry-After": String(limite.esperaSegundos) } },
+      { ok: false, codigo: "limite", esperaSegundos: resultado.esperaSegundos },
+      {
+        status: 429,
+        headers: { "Retry-After": String(resultado.esperaSegundos) },
+      },
     );
   }
 
-  const resultado = await enviarMensagem(parsed.data);
-  if (!resultado.ok) {
-    return resultado.motivo === "nao-configurado"
+  const envio = await enviarMensagem(parsed.data);
+  if (!envio.ok) {
+    return envio.motivo === "nao-configurado"
       ? erro("indisponivel", 503)
       : erro("falha", 502);
   }
