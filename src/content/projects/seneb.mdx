@@ -12,37 +12,40 @@ stack:
   - MongoDB Atlas
   - Desktop
 cover: /covers/seneb.png
-links: {}
+links:
+  repo: https://github.com/MatheusAmorimm/seneb
 title:
   pt: Seneb
   en: Seneb
 summary:
-  pt: Aplicação desktop de controle financeiro colaborativo, construída para uma usuária real que precisava enxergar o dinheiro sem enxergar fórmula.
-  en: Collaborative financial control desktop application, built for a real user who needed to see the money without seeing a formula.
+  pt: SaaS de gestão financeira pessoal e colaborativa, distribuído como aplicativo desktop para Windows e Linux — Tauri e Next.js na frente, FastAPI e MongoDB Atlas atrás.
+  en: Personal and collaborative finance SaaS, shipped as a desktop app for Windows and Linux — Tauri and Next.js up front, FastAPI and MongoDB Atlas behind.
 ---
 
 <!-- lang:pt -->
 
 ## Contexto
 
-Meu projeto pessoal de maior tempo de desenvolvimento, e o único que nasceu de um usuário com nome e rosto: minha esposa controlava as finanças da casa em Excel e a queixa era sempre a mesma — para ver qualquer coisa, precisava atravessar uma fórmula. Ela queria o resultado, não a planilha.
+O Seneb é um SaaS de gestão financeira pessoal e colaborativa, distribuído como aplicativo desktop para Windows e Linux. É o meu projeto pessoal de maior tempo de desenvolvimento.
 
-Isso definiu três requisitos antes de qualquer linha de código: a interface precisava ser visual em primeiro lugar; precisava rodar como aplicativo, não como aba de navegador com login; e precisava ser colaborativa, porque o dinheiro da casa é de duas pessoas.
+O usuário trabalha num espaço pessoal ou num espaço de grupo, e é essa segunda parte que define o projeto: mais de uma pessoa, em máquinas diferentes, precisa ver o mesmo estado das contas. O monorepo reúne o app desktop (Tauri com Next.js embutido), a landing page em Next.js e o backend em FastAPI sobre MongoDB Atlas.
 
 ## Decisões técnicas
 
 *Tauri em vez de Electron.* Primeira vez que construí para desktop, e a escolha foi pela alternativa mais recente. O ganho concreto do Tauri é usar o webview nativo do sistema operacional em vez de embarcar um Chromium inteiro — o que significa binário de poucos megabytes e consumo de memória bem menor que o equivalente em Electron. Para um app que fica aberto em segundo plano no computador de casa, isso importa.
 
-*Backend separado, em FastAPI.* Manter a lógica financeira num serviço próprio, fora do runtime desktop, é o que torna a parte colaborativa possível: duas pessoas em máquinas diferentes precisam ver o mesmo estado. Um app desktop com banco local resolveria o problema da esposa e nenhum dos dois.
+*Backend separado, em FastAPI.* Manter a lógica financeira num serviço próprio, fora do runtime desktop, é o que torna a parte colaborativa possível: duas pessoas em máquinas diferentes precisam ver o mesmo estado.
+
+*Clean Architecture no backend, com regra de dependência estrita.* Quatro camadas concêntricas, e dependência só aponta para dentro: entidades de domínio sem nenhum import de framework, casos de uso que recebem DTOs e nunca objetos HTTP, repositórios MongoDB implementando os contratos do domínio, e controllers finos que só recebem, chamam o caso de uso e respondem. Pré-condições passam por um *gate* que acumula violações antes de qualquer regra executar.
+
+*Segurança como padrão obrigatório, não como remendo.* Códigos de uso único são gerados com `secrets`, nunca com `random`, e comparados em tempo constante com `hmac.compare_digest`. Todo código tem prazo de validade no banco. Trocar senha ou e-mail incrementa uma versão de token no usuário, e o token antigo morre na hora. Os endpoints de autenticação têm limite de requisições por IP, e a recuperação de senha não revela se um e-mail existe.
 
 *MongoDB Atlas.* Escolhido por familiaridade — é o banco com que trabalho mais no dia a dia, e num projeto pessoal de longa duração a velocidade de iteração conta. É também a decisão que eu revisitaria: domínio financeiro pede precisão decimal e garantias transacionais que um banco relacional entrega com menos esforço. Num projeto posterior, no mesmo tipo de domínio, escolhi PostgreSQL justamente por isso.
 
 ## Resultado
 
-Aplicação desktop cross-platform para Windows e Linux, com frontend em Next.js empacotado via Tauri e backend em FastAPI sobre MongoDB Atlas. Em desenvolvimento ativo, com CI configurada para o build multiplataforma.
+Aplicação desktop cross-platform para Windows e Linux, com frontend em Next.js empacotado via Tauri e backend em FastAPI sobre MongoDB Atlas. O pipeline no GitLab tem três estágios: um runner Windows gera o instalador MSI assinado, um Ubuntu gera AppImage e DEB, e o terceiro sincroniza o código com uma VPS e reconstrói a landing page. O app se atualiza sozinho pelo Tauri Updater, com assinatura criptográfica dos artefatos. Em desenvolvimento ativo.
 
 ## Aprendizados
-
-Construir para uma pessoa específica muda o que você prioriza. Quase toda decisão de interface se resolveu perguntando "ela vai entender isso sem eu explicar?" — critério mais duro e mais útil que qualquer heurística de usabilidade que eu tivesse aplicado sozinho.
 
 A escolha do banco foi a lição mais cara. Ir pelo que eu já conhecia foi confortável no começo e virou dívida depois, num domínio onde o tipo de dado tem exigências próprias. Familiaridade é um critério legítimo — só não deveria ser o primeiro.
