@@ -40,3 +40,23 @@ Ferramenta empacotada como executável, em uso real no trabalho. Estrutura modul
 ## Aprendizados
 
 Automação nasce de irritação repetida. A ferramenta existe porque a mesma sequência de cliques aconteceu vezes suficientes para valer uma tarde de código — e esse é o critério que uso desde então para decidir o que automatizar.
+
+<!-- lang:en -->
+
+## Context
+
+I needed to switch quickly between DNS configurations to connect to a Pi-hole running in a VM, used as the operation's DNS filter. Doing that through the Windows interface on every switch is slow and error-prone — especially because it involves IPv4 and IPv6 at the same time, on separate screens.
+
+## Technical decisions
+
+*CLI, not a graphical interface.* The operation is a configuration switch, not exploration. One command does what the Windows interface does in six clicks spread across three windows — and a command can be scripted later, which a GUI cannot.
+
+*Packaging with PyInstaller.* The goal was to run on any Windows machine in the operation without depending on the system version or on having Python installed. The executable carries its own runtime: whoever uses it installs nothing, just runs it.
+
+## Result
+
+Tool packaged as an executable, in real use at work. Modular structure, with a script-automated build.
+
+## Learnings
+
+Automation is born from repeated irritation. The tool exists because the same sequence of clicks happened enough times to be worth an afternoon of code — and that has been my criterion for deciding what to automate ever since.

@@ -49,3 +49,31 @@ Aplicação desktop cross-platform para Windows e Linux, com frontend em Next.js
 ## Aprendizados
 
 A escolha do banco foi a lição mais cara. Ir pelo que eu já conhecia foi confortável no começo e virou dívida depois, num domínio onde o tipo de dado tem exigências próprias. Familiaridade é um critério legítimo — só não deveria ser o primeiro.
+
+<!-- lang:en -->
+
+## Context
+
+Seneb is a personal and collaborative finance SaaS, shipped as a desktop application for Windows and Linux. It is my longest-running personal project.
+
+The user works in a personal space or in a group space, and that second part is what defines the project: more than one person, on different machines, needs to see the same state of the accounts. The monorepo holds the desktop app (Tauri with Next.js embedded), the landing page in Next.js and the backend in FastAPI on MongoDB Atlas.
+
+## Technical decisions
+
+*Tauri instead of Electron.* First time building for desktop, and the choice was the more recent alternative. Tauri's concrete gain is using the operating system's native webview instead of bundling an entire Chromium — which means a binary of a few megabytes and far lower memory use than the Electron equivalent. For an app that stays open in the background on a home computer, that matters.
+
+*A separate backend, in FastAPI.* Keeping the financial logic in its own service, outside the desktop runtime, is what makes the collaborative part possible: two people on different machines need to see the same state.
+
+*Clean Architecture on the backend, with a strict dependency rule.* Four concentric layers, and dependencies only point inward: domain entities with no framework import, use cases that receive DTOs and never HTTP objects, MongoDB repositories implementing the domain's contracts, and thin controllers that only receive, call the use case and respond. Preconditions go through a *gate* that accumulates violations before any rule runs.
+
+*Security as a mandatory default, not a patch.* One-time codes are generated with `secrets`, never with `random`, and compared in constant time with `hmac.compare_digest`. Every code has an expiry in the database. Changing the password or email increments a token version on the user, and the old token dies immediately. Authentication endpoints are rate-limited per IP, and password recovery does not reveal whether an email exists.
+
+*MongoDB Atlas.* Chosen out of familiarity — it is the database I work with most day to day, and in a long-running personal project iteration speed counts. It is also the decision I would revisit: a financial domain calls for decimal precision and transactional guarantees that a relational database delivers with less effort. In a later project, in the same kind of domain, I chose PostgreSQL for exactly that reason.
+
+## Result
+
+Cross-platform desktop application for Windows and Linux, with a Next.js frontend packaged via Tauri and a FastAPI backend on MongoDB Atlas. The GitLab pipeline has three stages: a Windows runner builds the signed MSI installer, an Ubuntu runner builds the AppImage and DEB, and the third syncs the code to a VPS and rebuilds the landing page. The app updates itself through Tauri Updater, with cryptographic signing of the artifacts. In active development.
+
+## Learnings
+
+The database choice was the most expensive lesson. Going with what I already knew was comfortable at first and became debt later, in a domain where the data type has requirements of its own. Familiarity is a legitimate criterion — it just should not be the first one.

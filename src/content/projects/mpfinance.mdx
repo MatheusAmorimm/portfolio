@@ -43,3 +43,25 @@ Aplicação funcional com autenticação JWT, hash BCrypt, verificação de e-ma
 ## Aprendizados
 
 A disciplina de manter a regra de dependência é maior que a de escrever a camada. É fácil deixar uma referência vazar do Application para o Infrastructure quando o prazo aperta, e o custo aparece semanas depois.
+
+<!-- lang:en -->
+
+## Context
+
+A Software Engineering course project with one explicit constraint: use technologies I did not master. I chose ASP.NET Core 10 and Angular 21, stepping out of the Node/React stack that was already comfortable.
+
+## Technical decisions
+
+*Monolith, not microservices.* The decision is documented with the criterion behind it: one developer, one database, zero latency between domains, native ACID, a linear stack trace. Microservices solve a team organisation problem, not a code complexity problem — and there were no teams. The reference was concrete: Nubank adopted microservices because it had multiple teams and domains isolated for regulatory reasons, not for architectural elegance.
+
+*Clean Architecture in four layers, with a strict dependency rule.* Domain knows nothing about Infrastructure; Application knows nothing about EF Core. Every dependency points inward. The cost is more files; the return is being able to swap the ORM without touching business rules.
+
+*Domain events via MediatR.* Registering a user publishes `UserRegisteredEvent`; the `WelcomeEmailHandler` reacts. The Controller does not know an email service exists. An in-process Observer pattern, without the operational cost of external messaging.
+
+## Result
+
+A working application with JWT authentication, BCrypt hashing, email verification by OTP code with expiry, recurring fixed transactions and goals with progressive deposits. Five patterns applied with a named purpose — Repository, Facade, Factory, Mediator, Strategy — not by catalogue. The whole thing comes up with `docker-compose up`, with a health check ensuring the API only starts after the database. Commits standardised with Husky and Commitlint.
+
+## Learnings
+
+The discipline of keeping the dependency rule is greater than the discipline of writing the layer. It is easy to let a reference leak from Application into Infrastructure when the deadline tightens, and the cost shows up weeks later.

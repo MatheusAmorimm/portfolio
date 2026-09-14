@@ -40,3 +40,23 @@ De aproximadamente 5 minutos para cerca de 6 segundos — em torno de 50 vezes m
 ## Aprendizados
 
 A primeira pergunta diante de código lento não é "como deixo isso mais rápido?", é "o que ele está fazendo enquanto está lento?". Cinco minutos de espera em rede e cinco minutos de cálculo pedem soluções opostas.
+
+<!-- lang:en -->
+
+## Context
+
+The course's scraping exercises were sequential and small. I asked the professor for a bigger challenge and he proposed the real problem: collect data on many books spread across many paginated pages. The naive version worked — and took about five minutes.
+
+## Technical decisions
+
+*Identify that the bottleneck was waiting, not processing.* Scraping spends almost all of its time blocked waiting for HTTP responses, not using the CPU. That diagnosis is what defines the solution: threading handles I/O-bound workloads, and this is exactly that case. Had it been a CPU bottleneck, threads would not help — Python's GIL would prevent the gain.
+
+*Parallelise the requests, keep the collection deterministic.* Several pages fetched at the same time, with the results assembled consistently at the end, regardless of the order in which the responses arrive.
+
+## Result
+
+From roughly 5 minutes to about 6 seconds — around 50 times faster, without changing the extraction logic. The whole gain came from understanding why the program was slow, not from optimising the code that already existed.
+
+## Learnings
+
+The first question in front of slow code is not "how do I make this faster?", it is "what is it doing while it is slow?". Five minutes of network waiting and five minutes of computation call for opposite solutions.

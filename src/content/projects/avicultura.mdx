@@ -45,3 +45,27 @@ O insight de negócio foi mais valioso que o modelo: **mortalidade tardia é o m
 ## Aprendizados
 
 R² de 0,56 é teto modesto — clima, qualidade do lote de ração e manejo diário ficaram fora da base. Modelos de árvore provavelmente capturariam interações que a regressão linear não vê, mas estavam fora do escopo da matéria. E há uma limitação de uso real: parte das variáveis só é conhecida no fim do ciclo, o que restringe a aplicação preditiva antes do abate. Uma versão seguinte usaria apenas o que se sabe no dia do alojamento.
+
+<!-- lang:en -->
+
+## Context
+
+Feed conversion (kg of feed per kg of chicken produced) is the indicator that defines a poultry integrator's margin. The dataset had 5,813 batches and 40 variables covering the entire production cycle — housing, nutrition, genetics, weekly mortality, slaughter. The business question: can a batch's efficiency be predicted, and what affects it most?
+
+## Technical decisions
+
+*Choose k by generalisation, not by the best test score.* The k with the highest test R² was clearly overfitting (k=5: train R² 0.48 against 0.24 on test). The criterion adopted was the smallest k with ΔR² ≤ 0.05, confirmed by 5-fold cross-validation — it landed on k=25. It is a choice that worsens the number in the table and improves the model.
+
+*Fit the preprocessing on the training set only.* `StandardScaler` with `fit` exclusively on the training set. Without that, information from the test set leaks into the model and the metric lies.
+
+*Translate the error into the language of whoever pays.* An MAE of 0.0264 means nothing on its own. Applied to a typical batch of 92,000 kg of chicken, it becomes ~2,400 kg of feed — 1.5% of consumption. That is the number the integrator understands.
+
+## Result
+
+The linear model (SGD) beat KNN by a wide margin: R² of 0.56 against 0.24, and with less overfitting. The result suggests a predominantly linear and additive relationship between the production variables and feed conversion — a scenario where searching for neighbours in a 99-dimensional space loses effectiveness.
+
+The business insight was worth more than the model: **late mortality is the single largest driver of feed conversion** (r = 0.50 for cumulative mortality up to day 49). And the correlation grows over the cycle — a bird that dies in week 7 has already eaten almost all of its feed without delivering weight at slaughter. The practical recommendation was to concentrate biosecurity on weeks 5 to 7, a bigger lever than adjustments to nutrition or genetics.
+
+## Learnings
+
+An R² of 0.56 is a modest ceiling — weather, feed batch quality and daily handling were outside the dataset. Tree-based models would probably capture interactions that linear regression cannot see, but they were outside the scope of the course. And there is a real-world limitation: some of the variables are only known at the end of the cycle, which restricts predictive use before slaughter. A next version would use only what is known on housing day.
